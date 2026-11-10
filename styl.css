@@ -51,7 +51,7 @@
        --baner: url("https://i.imgur.com/twojobrazek.jpg");
      none = zostaje domyślny baner Shindena.
      Najlepiej szeroki obrazek, min. 1920×500 px. */
-  --baner:        url("https://github.com/opmix/opshinden/blob/main/baner.webp");
+  --baner:        url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/baner.webp');
   --baner-proporcje: 2.3337;  /* szerokość ÷ wysokość obrazka (baner.webp: 1916 ÷ 821) */
   --baner-krawedz:   .53;     /* na jakiej wysokości obrazka (0–1) jest korona muru — ta linia trafia na dół banera,
                                  dokładnie tam, gdzie siedzi postać. Dla innego obrazka: 1 = dół obrazka na dole banera */
@@ -59,14 +59,14 @@
 
   /* --- postacie --- */
   /* postać SIEDZĄCA na murze banera (jego dolnej krawędzi), nogi zwisają nad listą */
-  --postac:       url("https://github.com/opmix/opshinden/blob/main/witch1.webp");
+  --postac:       url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/witch1.webp');
   --postac-siad:  .615;          /* na jakiej wysokości obrazka (0–1, od góry) siedzi — u witch1 pod dłońmi */
   --postac-proporcje: .75;       /* szerokość ÷ wysokość obrazka (witch1: 1086 ÷ 1448) */
   --postac-h:     420px;         /* wysokość całej postaci */
   --postac-nogi-na-liscie: 70px; /* ile nóg może zachodzić na panel listy (reszta = odstęp nad listą) */
   --postac-x:     calc(50% + 20px);   /* odległość od lewej krawędzi ekranu */
   --postac-maska: none;          /* opcjonalne wygaszanie krawędzi, np. dla obrazka z uciętym elementem */
-  --postac-duza:  url("https://github.com/opmix/opshinden/blob/main/witch2.webp");
+  --postac-duza:  url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/witch2.webp');
                   /* ↑ postać stojąca przy LEWEJ krawędzi ekranu (widać ją na ekranach ≥1700px) */
   --postac-duza-proporcje: .6667;   /* szerokość ÷ wysokość obrazka (witch2: 1024 ÷ 1536) — postać jest zawsze cała, w pełnej wysokości okna */
   /* wysokość dużej postaci z boku — dobrana pod monitor 1440p, stała (nie zmienia się razem z oknem; na 1080p dół postaci
@@ -165,19 +165,20 @@
      każda warstwa to dwa RÓŻNE kafle o różnych rozmiarach nałożone na siebie
      (a 600 + b 400 px — dalsza, c 540 + d 360 px — bliższa), więc układ powtarza się dopiero co 1200 / 1080 px;
      jasne iskierki są tylko w większych kaflach, żeby nie układały się w widoczne rzędy */
-  --gwiazdy-a: url("https://raw.githubusercontent.com/opmix/opshinden/main/gwiazdy-a.svg");
-  --gwiazdy-b: url("https://raw.githubusercontent.com/opmix/opshinden/main/gwiazdy-b.svg");
-  --gwiazdy-c: url("https://raw.githubusercontent.com/opmix/opshinden/main/gwiazdy-c.svg");
-  --gwiazdy-d: url("https://raw.githubusercontent.com/opmix/opshinden/main/gwiazdy-d.svg");
+  --gwiazdy-a: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/gwiazdy-a.svg');
+  --gwiazdy-b: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/gwiazdy-b.svg');
+  --gwiazdy-c: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/gwiazdy-c.svg');
+  --gwiazdy-d: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/gwiazdy-d.svg');
   /* złote narożniki ramek (panele, okna) */
    --narozniki: 
-    url("https://raw.githubusercontent.com/opmix/opshinden/main/naroznik.svg") left top / 48px no-repeat, 
-    url("https://raw.githubusercontent.com/opmix/opshinden/main/naroznik.svg") right top / 48px no-repeat,
-    url("https://raw.githubusercontent.com/opmix/opshinden/main/naroznik.svg") right bottom / 48px no-repeat, 
-    url("https://raw.githubusercontent.com/opmix/opshinden/main/naroznik.svg") left bottom / 48px no-repeat;
+    url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/naroznik.svg') left top / 48px no-repeat, 
+    url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/naroznik.svg') right top / 48px no-repeat,
+    url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/naroznik.svg') right bottom / 48px no-repeat, 
+    url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/naroznik.svg') left bottom / 48px no-repeat;
    /* płatki */
-   --platki-pelne: url("https://raw.githubusercontent.com/opmix/opshinden/main/platki-pelne.svg");
-   --platki-lekkie: url("https://raw.githubusercontent.com/opmix/opshinden/main/platki-lekkie.svg");
+   --platki-pelne: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/platki-pelne.svg');
+   --platki-lekkie: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/platki-lekkie.svg');
+   /* dżwięk */
 }
 
 /* =====================================================================
