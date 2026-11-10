@@ -1,219 +1,222 @@
 @import url("https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Shippori+Mincho:wght@700&display=swap");
+
 /* =====================================================================
-   SHINDEN × OPMIX — motyw „WIEDŹMA”
-   Gotycka baśń: nocne niebo z gwiazdami, płatki róż nad murem zamku,
-   złote ozdobne ramki, wiedźma siedząca na murze, aksamitna chorągiew z boku.
-   Najlepiej wygląda w widoku KAFELKÓW (trzeci przycisk nad listą).
-
-   ▼▼▼ TU PODMIENIASZ OBRAZKI I TEKSTY ▼▼▼
-   ===================================================================== */
+SHINDEN × OPMIX — motyw „WIEDŹMA”
+===================================================================== /
 :root {
-  /* --- tekst na banerze --- */
-  --nick:         "OPMIX";
-  --nick-sub-anime: "✦ KSIĘGA ANIME ✦";   /* wstęga nad nickiem — osobno dla każdej listy */
-  --nick-sub-manga: "✦ KSIĘGA MANGI ✦";
-  --nick-sub-novel: "✦ KSIĘGA NOWELEK ✦";
-  --nick-sub-ustawienia: "✦ USTAWIENIA ✦";   /* na stronach ustawień (/settings/…) */
-  --stopka-autor: "OPMIX";   /* podpis w stopce: STYLE BY … */
+/ --- tekst na banerze --- */
+--nick:         "OPMIX";
+--nick-sub-anime: "✦ KSIĘGA ANIME ✦";
+--nick-sub-manga: "✦ KSIĘGA MANGI ✦";
+--nick-sub-novel: "✦ KSIĘGA NOWELEK ✦";
+--nick-sub-ustawienia: "✦ USTAWIENIA ✦";
+--stopka-autor: "OPMIX";
 
-  /* --- tytuł księgi w widoku tabeli (pasek nad listą) --- */
-  --ksiega-anime: "Księga Anime";
-  --ksiega-manga: "Księga Mangi";
-  --ksiega-novel: "Księga Nowelek";
+/* --- tytuł księgi w widoku tabeli --- */
+--ksiega-anime: "Księga Anime";
+--ksiega-manga: "Księga Mangi";
+--ksiega-novel: "Księga Nowelek";
 
-  /* --- pionowa aksamitna chorągiew po prawej (ekrany ≥1600px) --- */
-  --choragiew-anime: "アニメ・リスト";
-  --choragiew-ustawienia: "設定";
-  --choragiew-manga: "マンガ・リスト";
-  --choragiew-novel: "ノベル・リスト";
-  --choragiew-kolor: #7a1d5c;   /* kolor aksamitu */
-  --choragiew-widok: block;     /* none = bez chorągwi */
+/* --- pionowa aksamitna chorągiew po prawej (ekrany ≥1600px) --- */
+--choragiew-anime: "アニメ・リスト";
+--choragiew-ustawienia: "設定";
+--choragiew-manga: "マンガ・リスト";
+--choragiew-novel: "ノベル・リスト";
+--choragiew-kolor: #7a1d5c;
+--choragiew-widok: block;
 
-  /* --- płatki róż i iskry na banerze --- */
-  --platki-widok: block;   /* none = bez płatków */
-  --platki-sila:  .8;      /* widoczność płatków: 0–1 */
-  --platki-wersja: var(--platki-pelne);   /* lżejsze (ok. 45% płatków, dla słabszych komputerów): var(--platki-lekkie) */
+/* --- płatki róż i iskry na banerze --- */
+--platki-widok: block;
+--platki-sila:  .8;
+--platki-wersja: var(--platki-pelne);
 
-  /* --- pasek nawigacji u góry (od 1024px): nazwy pozycji i podpisy grup --- */
-  --menu-listy:      "Listy";
-  --menu-anime:      "Anime";
-  --menu-manga:      "Manga";
-  --menu-nowelki:    "Nowelki";
-  --menu-spis:       "Spis";
-  --menu-spis-anime: "Anime";
-  --menu-spis-manga: "Manga";
-  --menu-oceny:      "Oceny skinów";
-  --menu-moja-lista: "Moja lista";   /* na cudzych listach po zalogowaniu */
-  --lista-bez-nazwy: "Lista własna";   /* tytuł listy własnej, gdy Shinden nie poda nazwy (lista ukryta) */
+/* --- pasek nawigacji --- */
+--menu-listy:      "Listy";
+--menu-anime:      "Anime";
+--menu-manga:      "Manga";
+--menu-nowelki:    "Nowelki";
+--menu-spis:       "Spis";
+--menu-spis-anime: "Anime";
+--menu-spis-manga: "Manga";
+--menu-oceny:      "Oceny skinów";
+--menu-moja-lista: "Moja lista";
+--lista-bez-nazwy: "Lista własna";
 
-  /* --- TŁO BANERU ---
-     Wklej adres obrazka w url("…"), np.:
-       --baner: url("https://i.imgur.com/twojobrazek.jpg");
-     none = zostaje domyślny baner Shindena.
-     Najlepiej szeroki obrazek, min. 1920×500 px. */
-  --baner:        url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/baner.webp');
-  --baner-proporcje: 2.3337;  /* szerokość ÷ wysokość obrazka (baner.webp: 1916 ÷ 821) */
-  --baner-krawedz:   .53;     /* na jakiej wysokości obrazka (0–1) jest korona muru — ta linia trafia na dół banera,
-                                 dokładnie tam, gdzie siedzi postać. Dla innego obrazka: 1 = dół obrazka na dole banera */
-  --baner-jasnosc: .62;       /* przyciemnienie banera po lewej (pod nickiem): 0 = brak, 1 = czarno */
+/* --- TŁO BANERU --- */
+--baner:        url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/baner.webp');
+--baner-pos:    center center;
+--baner-proporcje: 2.3337;
+--baner-krawedz:   .53;
+--baner-jasnosc: .62;
 
-  /* --- postacie --- */
-  /* postać SIEDZĄCA na murze banera (jego dolnej krawędzi), nogi zwisają nad listą */
-  --postac:       url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/witch1.webp');
-  --postac-siad:  .615;          /* na jakiej wysokości obrazka (0–1, od góry) siedzi — u witch1 pod dłońmi */
-  --postac-proporcje: .75;       /* szerokość ÷ wysokość obrazka (witch1: 1086 ÷ 1448) */
-  --postac-h:     420px;         /* wysokość całej postaci */
-  --postac-nogi-na-liscie: 70px; /* ile nóg może zachodzić na panel listy (reszta = odstęp nad listą) */
-  --postac-x:     calc(50% + 20px);   /* odległość od lewej krawędzi ekranu */
-  --postac-maska: none;          /* opcjonalne wygaszanie krawędzi, np. dla obrazka z uciętym elementem */
-  --postac-duza:  url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/witch2.webp');
-                  /* ↑ postać stojąca przy LEWEJ krawędzi ekranu (widać ją na ekranach ≥1700px) */
-  --postac-duza-proporcje: .6667;   /* szerokość ÷ wysokość obrazka (witch2: 1024 ÷ 1536) — postać jest zawsze cała, w pełnej wysokości okna */
-  /* wysokość dużej postaci z boku — dobrana pod monitor 1440p, stała (nie zmienia się razem z oknem; na 1080p dół postaci
-     chowa się pod krawędzią ekranu). Obrazek (witch2) ma 1536px wysokości, więc ostro wyświetla się do ok. 1536px */
-  --postac-duza-h:    1240px;
-  --postac-duza-h-4k: 1500px;   /* monitory 4K bez skalowania (wysokość ekranu od 2160px) — większa, ale bez rozciągania obrazka */
-  --postac-duza-maska: linear-gradient(to top, transparent 0, #000 7%);
-                  /* ↑ zanikające stopy; dla zwykłego obrazka z tłem daj:
-                       radial-gradient(ellipse 50% 50% at 50% 55%, #000 50%, transparent 100%) */
+/* --- postacie --- */
+--postac:       url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/witch1.webp');
+--postac-siad:  .615;
+--postac-proporcje: .75;
+--postac-h:     420px;
+--postac-nogi-na-liscie: 70px;
+--postac-x:     calc(50% + 20px);
+--postac-maska: none;
 
-  /* --- gwiazdy w tle --- */
-  --gwiazdy-ruch: running;   /* paused = gwiazdy stoją w miejscu i nie migoczą */
+--postac-duza:  url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/witch2.webp');
+--postac-duza-proporcje: .6667;
+--postac-duza-h:    1240px;
+--postac-duza-h-4k: 1500px;
+--postac-duza-maska: linear-gradient(to top, transparent 0, #000 7%);
 
-/* ▲▲▲ dalej już tylko kolory i wymiary ▲▲▲ */
-  --font-display: "Cinzel Decorative", "Cinzel", serif;   /* nick */
-  --font-title: "Cinzel", "EB Garamond", serif;            /* nagłówki */
-  --font: "EB Garamond", "Georgia", serif;                 /* zwykły tekst */
-  --font-label: "Cinzel", "Georgia", serif;                /* etykiety, liczniki */
+/* --- gwiazdy w tle --- */
+--gwiazdy-ruch: running;
 
-  --accent: #b77cff;
-  --accent-rgb: 183, 124, 255;
-  --accent-light: #e2c8ff;
-  --accent-2: #e8458b;
-  --accent-2-rgb: 232, 69, 139;
-  --gold: #d9b56c;
-  --gold-rgb: 217, 181, 108;
-  --gold-light: #f3d9a0;
-  --text: #ece3f5;
-  --muted: #a397b8;
-  --heading: #fff4e2;
-  --line: rgba(217, 181, 108, .24);
+/* --- czcionki i kolory --- */
+--font-display: "Cinzel Decorative", "Cinzel", serif;
+--font-title: "Cinzel", "EB Garamond", serif;
+--font: "EB Garamond", "Georgia", serif;
+--font-label: "Cinzel", "Georgia", serif;
 
-  --bg-rgb: 12, 8, 20;
-  --bg-solid: #0c0814;
-  --bg-image: radial-gradient(ellipse at 85% 0%, rgba(183, 124, 255, .16), transparent 50%),
-              radial-gradient(ellipse at 0% 100%, rgba(232, 69, 139, .13), transparent 50%),
-              linear-gradient(to bottom, #130b22, #0c0814 60%);
-  --nav-bg: rgba(14, 9, 24, .86);
-  --panel: rgba(20, 12, 34, .86);
-  --panel-solid: #150d24;
-  --panel-blur: none;
-  --input-bg: rgba(183, 124, 255, .06);
-  --shadow: 0 0 0 transparent;
-  --radius: 12px;
-  --radius-sm: 6px;
+--accent: #b77cff;
+--accent-rgb: 183, 124, 255;
+--accent-light: #e2c8ff;
+--accent-2: #e8458b;
+--accent-2-rgb: 232, 69, 139;
+--gold: #d9b56c;
+--gold-rgb: 217, 181, 108;
+--gold-light: #f3d9a0;
+--text: #ece3f5;
+--muted: #a397b8;
+--heading: #fff4e2;
+--line: rgba(217, 181, 108, .24);
 
-  --hero-h: 340px;
-  --hero-overlay: linear-gradient(100deg, rgba(var(--bg-rgb), var(--baner-jasnosc)) 0%, rgba(var(--bg-rgb), calc(var(--baner-jasnosc) * .8)) 40%, rgba(var(--bg-rgb), calc(var(--baner-jasnosc) * .2)) 75%),
-                  linear-gradient(to bottom, rgba(var(--bg-rgb), .35), transparent 25%, transparent 72%, rgba(var(--bg-rgb), .4));
+--bg-rgb: 12, 8, 20;
+--bg-solid: #0c0814;
+--bg-image: radial-gradient(ellipse at 85% 0%, rgba(183, 124, 255, .16), transparent 50%),
+radial-gradient(ellipse at 0% 100%, rgba(232, 69, 139, .13), transparent 50%),
+linear-gradient(to bottom, #130b22, #0c0814 60%);
+--nav-bg: rgba(14, 9, 24, .86);
+--panel: rgba(20, 12, 34, .86);
+--panel-solid: #150d24;
+--panel-blur: none;
+--input-bg: rgba(183, 124, 255, .06);
+--shadow: 0 0 0 transparent;
+--radius: 12px;
+--radius-sm: 6px;
 
-  --tile-min: 165px;   /* minimalna szerokość kafelka — im więcej, tym mniej kolumn i szersze karty */
-  --tile-gap: 16px;
-  --tile-ratio: auto;
-  --tile-radius: 0;
-  --luk: 26px;   /* wysokość łuku nad okładką kafelka (kształt gotyckiego okna); 0 = prostokąt */
+--hero-h: 340px;
+--hero-overlay: linear-gradient(100deg, rgba(var(--bg-rgb), var(--baner-jasnosc)) 0%, rgba(var(--bg-rgb), calc(var(--baner-jasnosc) * .8)) 40%, rgba(var(--bg-rgb), calc(var(--baner-jasnosc) * .2)) 75%),
+linear-gradient(to bottom, rgba(var(--bg-rgb), .35), transparent 25%, transparent 72%, rgba(var(--bg-rgb), .4));
 
-  /* kolory statusów — te same barwy co legenda Shindena na profilu (shinden.pl/user/…):
-     oglądam niebieski, obejrzane zielony, wstrzymane bursztynowy, porzucone koralowy, planuję fioletowy, pomijam szary;
-     odcienie dopasowane do motywu */
-  --st-in-progress: #5cbcf0;
-  --st-completed:   #3fcf99;
-  --st-skip:        #9aa6bb;
-  --st-hold:        #edb954;
-  --st-dropped:     #ee7a72;
-  --st-plan:        #ad94ff;
+--tile-min: 165px;
+--tile-gap: 16px;
+--tile-ratio: auto;
+--tile-radius: 0;
+--luk: 26px;
 
-  --side-display: block;
-  /* postać stoi zawsze w tym samym miejscu WZGLĘDEM LISTY: środek --side-od-listy na lewo od lewej krawędzi
-     ramki strony (lista jest wyśrodkowana i ma 1240px, więc jej lewa krawędź to 50vw − 620px). Przy szerszym
-     oknie postać przesuwa się razem z listą, więc nie robi się luka; brzeg obrazka może wyjść poza ekran.
-     Pokazuje się od 1700px (niżej: reguła z max-width), kiedy jej środek mieści się na ekranie.
-     Postać po prawej: --side-left: auto i --side-right: … */
-  --side-od-listy: 140px;
-  --side-left: calc(50vw - 620px - var(--side-od-listy) - var(--side-w) / 2);
-  --side-right: auto;
-  /* postać stoi w całości i nie zależy od szerokości okna: wysokość = okno minus pasek nawigacji (60px,
-     żeby nie zasłaniał głowy), szerokość z proporcji obrazka — nic nie jest przycinane ani zmniejszane,
-     gdy okno się zwęża (na węższych ekranach część postaci chowa się za panelami listy) */
-  /* postać jest przypięta OD GÓRY (--side-gora pod górną krawędzią okna, pod paskiem nawigacji) i ma stałą wysokość
-     z konfiguracji (--postac-duza-h, na 4K --postac-duza-h-4k) — przy niższym oknie się nie zmniejsza,
-     tylko jej dół chowa się pod dolną krawędzią ekranu */
-  --side-gora: 60px;
-  --side-h: var(--postac-duza-h);
-  --side-w: calc(var(--side-h) * var(--postac-duza-proporcje));
-  --side-pos: center bottom;
-  --side-zapas: 40px;   /* wolne miejsce nad postacią, żeby poświata nad kapeluszem/głową nie była ucinana */
-  --side-size: auto calc(100% - var(--side-zapas));
-  /* dodatkowa maska krawędzi; domyślnie brak, bo ramka mieści cały obrazek. Gdy obrazek jest szerszy niż ramka
-     (np. własne --side-w), daj łagodne wygaszenie od strony listy: linear-gradient(to left, transparent 0, #000 48px) */
-  --side-krawedz: linear-gradient(#000, #000);
-  --side-mask: var(--postac-duza-maska);
-  --side-opacity: 1;
-  --side-filter: drop-shadow(0 0 16px rgba(183, 124, 255, .4)) drop-shadow(0 0 2px rgba(232, 69, 139, .45));
+/* kolory statusów */
+--st-in-progress: #5cbcf0;
+--st-completed:   #3fcf99;
+--st-skip:        #9aa6bb;
+--st-hold:        #edb954;
+--st-dropped:     #ee7a72;
+--st-plan:        #ad94ff;
 
-  /* gwiazdy w tle (kolor i przezroczystość są w samym SVG: liliowe #e8d6ff dalej, złote #ffe8be bliżej):
-     każda warstwa to dwa RÓŻNE kafle o różnych rozmiarach nałożone na siebie
-     (a 600 + b 400 px — dalsza, c 540 + d 360 px — bliższa), więc układ powtarza się dopiero co 1200 / 1080 px;
-     jasne iskierki są tylko w większych kaflach, żeby nie układały się w widoczne rzędy */
-  --gwiazdy-a: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/gwiazdy-a.svg');
-  --gwiazdy-b: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/gwiazdy-b.svg');
-  --gwiazdy-c: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/gwiazdy-c.svg');
-  --gwiazdy-d: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/gwiazdy-d.svg');
-  /* złote narożniki ramek (panele, okna) */
-   --narozniki: 
-    url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/naroznik.svg') left top / 48px no-repeat, 
-    url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/naroznik.svg') right top / 48px no-repeat,
-    url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/naroznik.svg') right bottom / 48px no-repeat, 
-    url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/naroznik.svg') left bottom / 48px no-repeat;
-   /* płatki */
-   --platki-pelne: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/platki-pelne.svg');
-   --platki-lekkie: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/platki-lekkie.svg');
-   /* dżwięk */
+--side-display: block;
+--side-od-listy: 140px;
+--side-left: calc(50vw - 620px - var(--side-od-listy) - var(--side-w) / 2);
+--side-right: auto;
+--side-gora: 60px;
+--side-h: var(--postac-duza-h);
+--side-w: calc(var(--side-h) * var(--postac-duza-proporcje));
+--side-pos: center bottom;
+--side-zapas: 40px;
+--side-size: auto calc(100% - var(--side-zapas));
+--side-krawedz: linear-gradient(#000, #000);
+--side-mask: var(--postac-duza-maska);
+--side-opacity: 1;
+--side-filter: drop-shadow(0 0 16px rgba(183, 124, 255, .4)) drop-shadow(0 0 2px rgba(232, 69, 139, .45));
+
+/* gwiazdy */
+--gwiazdy-a: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/gwiazdy-a.svg');
+--gwiazdy-b: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/gwiazdy-b.svg');
+--gwiazdy-c: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/gwiazdy-c.svg');
+--gwiazdy-d: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/gwiazdy-d.svg');
+
+/* narożniki */
+--narozniki:
+url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/naroznik.svg') left top / 48px no-repeat,
+url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/naroznik.svg') right top / 48px no-repeat,
+url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/naroznik.svg') right bottom / 48px no-repeat,
+url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/naroznik.svg') left bottom / 48px no-repeat;
+
+/* płatki */
+--platki-pelne: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/platki-pelne.svg');
+--platki-lekkie: url('https://cdn.jsdelivr.net/gh/opmix/opshinden@main/platki-lekkie.svg');
 }
 
 /* =====================================================================
-   RDZEŃ — wspólny dla wszystkich motywów (nie trzeba tu nic zmieniać)
-   ===================================================================== */
+RDZEŃ I EFEKTY WIZUALNE
+===================================================================== */
 
-/* ---------- statusy: kolor + etykieta (działa w kafelkach i tabeli) ---------- */
+/* ---------- postać stojąca po lewej stronie ---------- */
+body.shinden-list::before {
+content: "";
+display: var(--side-display);
+position: fixed;
+top: var(--side-gora);
+left: var(--side-left);
+width: var(--side-w);
+height: var(--side-h);
+background: var(--postac-duza) var(--side-pos) / var(--side-size) no-repeat;
+mask-image: var(--side-mask);
+-webkit-mask-image: var(--side-mask);
+filter: var(--side-filter);
+opacity: var(--side-opacity);
+pointer-events: none;
+z-index: 1;
+}
+
+@media (min-width: 2500px) {
+body.shinden-list {
+--side-h: var(--postac-duza-h-4k);
+}
+}
+
+@media (max-width: 1699px) {
+body.shinden-list::before {
+display: none !important;
+}
+}
+
+/* ---------- statusy ---------- */
 body.shinden-list .in-progress { --st: var(--st-in-progress); --st-label: "Oglądam"; }
 body.shinden-list .completed   { --st: var(--st-completed);   --st-label: "Obejrzane"; }
 body.shinden-list .skip        { --st: var(--st-skip);        --st-label: "Pomijam"; }
 body.shinden-list .hold        { --st: var(--st-hold);        --st-label: "Wstrzymane"; }
 body.shinden-list .dropped     { --st: var(--st-dropped);     --st-label: "Porzucone"; }
 body.shinden-list .plan        { --st: var(--st-plan);        --st-label: "Planuję"; }
-/* mangi i nowelki: te same kolory statusów, ale słowa „czytam / przeczytane” i rozdziały zamiast odcinków */
+
 body.shinden-list:is(.manga, .novel) .in-progress { --st-label: "Czytam"; }
 body.shinden-list:is(.manga, .novel) .completed   { --st-label: "Przeczytane"; }
 body.shinden-list { --ep-label: "EP "; }
 body.shinden-list:is(.manga, .novel) { --ep-label: "ROZ "; }
 
-/* ---------- tło i typografia ---------- */
+/* ---------- tło i gwiazdy ---------- */
 html:root { background: var(--bg-solid); scrollbar-color: rgba(var(--accent-rgb), .6) var(--bg-solid); }
 body.shinden-list {
-  background: transparent;
-  color: var(--text);
+background: transparent;
+color: var(--text);
 }
-/* tło w osobnej, nieruchomej warstwie pod całą stroną. background-attachment: fixed na <body>
-   kazało przeglądarce przerysowywać całe tło przy każdym przewinięciu, co dawało przycięcia */
+
 body.shinden-list #__next::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: var(--bg-image), var(--bg-solid);
+content: "";
+position: fixed;
+inset: 0;
+z-index: -1;
+pointer-events: none;
+background: var(--gwiazdy-a) 0 0 / 600px repeat,
+var(--gwiazdy-b) 0 0 / 400px repeat,
+var(--bg-image),
+var(--bg-solid);
 }
+
 body.shinden-list * { font-family: var(--font) !important; }
 body.shinden-list h1, body.shinden-list h2, body.shinden-list h3,
 body.shinden-list h4, body.shinden-list h5, body.shinden-list h6 { color: var(--heading) !important; }
@@ -225,54 +228,73 @@ body.shinden-list .navigation-list-item a,
 body.shinden-list .navigation-button { color: var(--text) !important; border-bottom: 0 !important; }
 body.shinden-list .navigation-list-item:hover a,
 body.shinden-list .navigation-button:hover { color: var(--gold-light) !important; }
+
 @media (max-width: 1023px) {
-  body.shinden-list .navigation-inner { background: var(--bg-image), var(--bg-solid) !important; }
-  body.shinden-list .hamburger svg { color: var(--gold-light); }
-  /* menu mobilne (hamburger): te same złote kapitaliki co pasek na dużym ekranie —
-     style paska są w @media (min-width: 1024px), więc tu trzeba je powtórzyć */
-  body.shinden-list .navigation-list-item a,
-  body.shinden-list .navigation-list-item .navigation-button {
-    font-family: var(--font-label) !important;
-    font-size: 14px !important;
-    font-weight: 600;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-  }
-  body.shinden-list .navigation-list-item a.is-active {
-    color: var(--gold-light) !important;
-    text-shadow: 0 0 12px rgba(var(--accent-rgb), .8);
-    background: linear-gradient(90deg, transparent, var(--gold), transparent) center bottom / 70% 1px no-repeat !important;
-    padding-bottom: 6px !important;
-  }
+body.shinden-list .navigation-inner { background: var(--bg-image), var(--bg-solid) !important; }
+body.shinden-list .hamburger svg { color: var(--gold-light); }
+body.shinden-list .navigation-list-item a,
+body.shinden-list .navigation-list-item .navigation-button {
+font-family: var(--font-label) !important;
+font-size: 14px !important;
+font-weight: 600;
+letter-spacing: .16em;
+text-transform: uppercase;
+}
+body.shinden-list .navigation-list-item a.is-active {
+color: var(--gold-light) !important;
+text-shadow: 0 0 12px rgba(var(--accent-rgb), .8);
+background: linear-gradient(90deg, transparent, var(--gold), transparent) center bottom / 70% 1px no-repeat !important;
+padding-bottom: 6px !important;
+}
 }
 
 /* ---------- baner (hero) ---------- */
 body.shinden-list .header-wrapper { position: relative; }
 body.shinden-list .hero-image-container {
-  position: relative;
-  /* postać (::after) ma margines na poświatę — na wąskich ekranach wystawał poza prawą krawędź
-     i rozpychał stronę (telefon ją pomniejszał). clip tnie tylko w poziomie: nogi dalej zwisają w dół */
-  overflow-x: clip;
-  height: var(--hero-h) !important;
-  box-shadow: none !important;
-  background-position: var(--baner-pos) !important;
-}
-/* warstwa: własny baner (jeśli ustawiony) + przyciemnienie */
-body.shinden-list .hero-image-container::before {
-  content: "";
-  position: absolute; inset: 0;
-  background: var(--hero-overlay), var(--baner) var(--baner-pos) / cover no-repeat;
+position: relative;
+overflow-x: clip;
+height: var(--hero-h) !important;
+box-shadow: none !important;
+background-position: var(--baner-pos) !important;
 }
 
-/* ---------- układ i panele ---------- */
+/* tło banera + nakładka z opadającymi płatkami róż */
+body.shinden-list .hero-image-container::before {
+content: "";
+position: absolute;
+inset: 0;
+background: var(--platki-wersja) center / cover repeat,
+var(--hero-overlay),
+var(--baner) var(--baner-pos) / cover no-repeat;
+opacity: var(--platki-sila);
+}
+
+/* postać siedząca na murze banera */
+body.shinden-list .hero-image-container::after {
+content: "";
+display: block;
+position: absolute;
+left: var(--postac-x);
+bottom: calc(-1 * var(--postac-nogi-na-liscie));
+width: calc(var(--postac-h) * var(--postac-proporcje));
+height: var(--postac-h);
+background: var(--postac) center / contain no-repeat;
+mask-image: var(--postac-maska);
+-webkit-mask-image: var(--postac-maska);
+pointer-events: none;
+z-index: 3;
+}
+
+/* ---------- układ, panele i ozdobne narożniki ---------- */
 body.shinden-list .content-wrapper { position: relative; z-index: 2; }
 body.shinden-list .view-content-wrapper {
-  background-color: var(--panel) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: var(--radius) !important;
-  box-shadow: var(--shadow);
-  backdrop-filter: var(--panel-blur);
-  padding: 20px !important;
+background-color: var(--panel) !important;
+background-image: var(--narozniki) !important;
+border: 1px solid var(--line) !important;
+border-radius: var(--radius) !important;
+box-shadow: var(--shadow);
+backdrop-filter: var(--panel-blur);
+padding: 24px !important;
 }
 body.shinden-list .view-content-h3 { color: var(--heading) !important; }
 
@@ -280,26 +302,26 @@ body.shinden-list .view-content-h3 { color: var(--heading) !important; }
 body.shinden-list .sidebarList-header,
 body.shinden-list .sidebar-group-header,
 body.shinden-list .MuiAccordionSummary-content {
-  font-family: var(--font-label) !important;
-  font-size: 11.5px !important;
-  font-weight: 600;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--gold) !important;
+font-family: var(--font-label) !important;
+font-size: 11.5px !important;
+font-weight: 600;
+letter-spacing: .2em;
+text-transform: uppercase;
+color: var(--gold) !important;
 }
 body.shinden-list .sidebar-list-item > a {
-  border: 1px solid transparent !important;
-  border-radius: var(--radius-sm) !important;
-  background: transparent !important;
-  margin-bottom: 2px;
-  transition: background .2s, border-color .2s;
+border: 1px solid transparent !important;
+border-radius: var(--radius-sm) !important;
+background: transparent !important;
+margin-bottom: 2px;
+transition: background .2s, border-color .2s;
 }
 body.shinden-list .sidebar-list-item > a span { color: var(--text) !important; }
 body.shinden-list .sidebar-list-item > a:hover { background: rgba(var(--accent-rgb), .08) !important; }
 body.shinden-list .sidebar-list-item:hover > a span { color: var(--accent-light) !important; }
 body.shinden-list .sidebar-list-item > a.is-active {
-  background: rgba(var(--accent-rgb), .16) !important;
-  border-color: rgba(var(--accent-rgb), .5) !important;
+background: rgba(var(--accent-rgb), .16) !important;
+border-color: rgba(var(--accent-rgb), .5) !important;
 }
 body.shinden-list .sidebar-list-counter { font-family: var(--font-label) !important; color: var(--muted) !important; }
 body.shinden-list .accordion-wrapper--sidebar .MuiPaper-root { background: transparent !important; color: var(--text) !important; box-shadow: none !important; }
@@ -308,36 +330,35 @@ body.shinden-list .MuiIconButton-root { color: var(--muted) !important; }
 
 /* ---------- pola, dropdowny, przyciski ---------- */
 body.shinden-list .input-wrapper {
-  background: var(--input-bg) !important;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm) !important;
+background: var(--input-bg) !important;
+border: 1px solid var(--line);
+border-radius: var(--radius-sm) !important;
 }
 body.shinden-list .input-element { border-color: transparent !important; border-radius: var(--radius-sm) !important; color: var(--text) !important; }
 body.shinden-list .input-placeholder,
 body.shinden-list .input-icon { color: var(--muted) !important; }
-/* aktywne pole: złota nić i ciepła poświata jak ramki paneli (fioletowy pierścień odstawał od złotych obramowań) */
+
 body.shinden-list .input-wrapper:focus-within {
-  border-color: rgba(var(--gold-rgb), .75);
-  box-shadow: 0 0 10px rgba(var(--gold-rgb), .22), inset 0 0 12px rgba(var(--accent-rgb), .14);
+border-color: rgba(var(--gold-rgb), .75);
+box-shadow: 0 0 10px rgba(var(--gold-rgb), .22), inset 0 0 12px rgba(var(--accent-rgb), .14);
 }
 
 body.shinden-list .custom-dropdown-control {
-  background: var(--input-bg) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: var(--radius-sm) !important;
-  box-shadow: none !important;
+background: var(--input-bg) !important;
+border: 1px solid var(--line) !important;
+border-radius: var(--radius-sm) !important;
+box-shadow: none !important;
 }
 body.shinden-list .custom-dropdown-control:hover,
 body.shinden-list .custom-dropdown-control[class*="isFocused"],
 body.shinden-list .custom-dropdown-control:focus-within { border-color: rgba(var(--gold-rgb), .6) !important; }
-/* .custom-dropdown = zwykłe listy, .custom-async-dropdown = tagi */
+
 body.shinden-list :is(.custom-dropdown, .custom-async-dropdown) :is([class*="singleValue"], [class*="placeholder"], input) { color: var(--text) !important; }
 body.shinden-list :is(.custom-dropdown, .custom-async-dropdown) [class*="placeholder"] { color: var(--muted) !important; }
 body.shinden-list :is(.custom-dropdown, .custom-async-dropdown) [class*="indicatorSeparator"] { background: var(--line) !important; }
 body.shinden-list :is(.custom-dropdown, .custom-async-dropdown) [class*="indicatorContainer"] { color: var(--muted) !important; }
 body.shinden-list :is(.custom-dropdown, .custom-async-dropdown) [class*="indicatorContainer"]:hover { color: var(--accent) !important; }
-/* strzałki ▾ i krzyżyki: Shinden koloruje samo <svg> (#eceaec, po najechaniu na pole fiolet #b91ffd / #840fad),
-   więc svg dziedziczy kolor z kontenera, a podświetlenie idzie od najechania na całe pole */
+
 body.shinden-list :is(.custom-dropdown, .custom-async-dropdown) [class*="indicatorContainer"] svg { color: inherit !important; }
 body.shinden-list :is(.custom-dropdown, .custom-async-dropdown) .custom-dropdown-control:is(:hover, :focus-within) [class*="indicatorContainer"] { color: var(--gold-light) !important; }
 body.shinden-list :is(.custom-dropdown, .custom-async-dropdown) [class*="multiValue"] { background: rgba(var(--accent-rgb), .15) !important; border-radius: var(--radius-sm); }
