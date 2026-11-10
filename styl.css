@@ -675,20 +675,7 @@ body.shinden-list {
 }
 
 /* ---------- gwiezdne niebo w tle ----------
-   dwie warstwy gwiazd: dalsza liliowa (body::before) i bliższa złota, drobniejsza (.page-wrapper::before).
-   Gwiazdy to zwykłe tło z kafli SVG (kolor wpisany w obrazek), BEZ maski — obracana (.01deg) i przesuwana
-   maska była w Firefoksie przeliczana w każdej klatce i animacja się zacinała. Animowane są tylko transform
-   i opacity — karta graficzna przesuwa gotowy obraz, nic nie jest przerysowywane. Warstwy płyną z różną prędkością (głębia) i rozjaśniają się
-   w innym rytmie, więc raz błyszczą jedne gwiazdy, raz drugie.
-   Znikomy obrót (.01deg) w ruchu nie jest widoczny, ale sprawia, że przeglądarka przesuwa warstwę
-   także o ułamki piksela — bez niego przyciągała ją do pełnych pikseli i gwiazdki skakały.
-   Każda warstwa ma DWA kafle tła: różne, losowo rozsiane o rozmiarach, których wspólna wielokrotność
-   jest duża (600 i 400 → 1200 px; 540 i 360 → 1080 px). Jeden kafel 260 px dawał wyraźną siatkę
-   powtórzeń; teraz ten sam układ wraca dopiero co 1200 / 1080 px, i to przesunięty względem drugiej warstwy.
-   Warstwy NIE przesuwają się o cały okres (wymagałoby to warstw ~1200px większych od ekranu — Firefox
-   nie przenosi tak dużych animowanych warstw na kartę graficzną, tylko je przerysowuje, i gwiazdy skakały,
-   a rozjaśnianie szło nierówno). Zamiast tego powoli dryfują w tę i z powrotem o kilkadziesiąt pikseli
-   (alternate), więc warstwa jest tylko o tyle większa od ekranu i nie potrzeba „bezszwowej” pętli. */
+   dwie warstwy gwiazd: dalsza liliowa (body::before) i bliższa złota, drobniejsza (.page-wrapper::before). */
 body.shinden-list::before,
 body.shinden-list .page-wrapper::before {
   content: "";
@@ -731,10 +718,7 @@ body.shinden-list .page-wrapper::before {
   to   { transform: translate3d(-140px, -140px, 0) rotate(.01deg); }
 }
 @keyframes gwiazdy-oddech { from { opacity: 1; } to { opacity: .15; } }
-/* Firefox: szybszy dryf (100px w 30 s, 140px w 20 s — wybrane na stronie testowej). Bardzo wolny przesuw (kilka px/s) Firefox przyciąga
-   do pełnych pikseli i gwiazdki skakały; szybszy idzie płynnie — sprawdzone stroną
-   narzedzia/test-gwiazd-firefox.html. Bez sztuczki z obrotem (potrzebuje jej tylko Chromium).
-   @supports z -moz-appearance spełnia tylko Firefox */
+
 @supports (-moz-appearance: none) {
   body.shinden-list::before {
     animation: gwiazdy-dryf-daleko-ff 30s ease-in-out infinite alternate, gwiazdy-oddech 5s ease-in-out infinite alternate;
@@ -754,8 +738,6 @@ body.shinden-list .page-wrapper::before {
 
 /* ---------- nawigacja ---------- */
 @media (min-width: 1024px) {
-  /* po zalogowaniu, na cudzych listach i w ustawieniach pasek ma więcej pozycji („Moja lista”, nick) —
-     odstępy i litery zwężają się płynnie od 1024px, żeby nic nie łamało się na dwie linie */
   body.shinden-list .navigation-list-item a {
     font-family: var(--font-label) !important;
     font-size: clamp(10.5px, calc(10.5px + (100vw - 1024px) * .0035), 12.5px) !important;
@@ -765,9 +747,7 @@ body.shinden-list .page-wrapper::before {
     white-space: nowrap;
     padding: 14px clamp(5px, calc(5px + (100vw - 1024px) * .015), 16px) !important;
   }
-  /* nick właściciela listy (prawa część paska) — długi nick skraca się wielokropkiem */
   body.shinden-list .navigation-list-item a[href*="/user/"] { max-width: 15ch; overflow: hidden; text-overflow: ellipsis; }
-  /* aktywna zakładka: aksamitna chorągiewka z wcięciem u dołu */
   body.shinden-list .navigation-list-item a.is-active {
     color: var(--gold-light) !important;
     background:
@@ -777,20 +757,13 @@ body.shinden-list .page-wrapper::before {
     clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 8px), 0 100%);
   }
 }
-/* złota linia pod paskiem — rysowana jako warstwa tła na dolnym pikselu paska, nie border-image: border-image na tym pasku
-   (z backdrop-filter) nie zawsze się rysował i linia znikała, zostawał tylko jasny odcinek pod aktywną pozycją */
 body.shinden-list .navigation-background {
   border-bottom: 0 !important;
   background:
     linear-gradient(90deg, transparent, rgba(var(--gold-rgb), .7) 20%, rgba(var(--gold-rgb), .7) 80%, transparent) left bottom / 100% 1px no-repeat,
     var(--nav-bg) !important;
 }
-/* ---------- pasek nawigacji: grupy z podpisami (od 1024px) ----------
-   ⌂  LISTY  Anime ✦ Manga ✦ Nowelki  |  SPIS  Anime ✦ Manga  |  ★ Oceny skinów — nazwy w konfiguracji (--menu-…).
-   Pozycje są rozpoznawane po adresach linków; nieznane (np. dodatkowe po zalogowaniu) zostają w zwykłym stylu.
-   Tekst linku zostaje w kodzie (font-size: 0) dla czytników ekranu, widoczna nazwa siedzi w ::after.
-   Aktywna pozycja rozjaśnia kawałek złotej linii oddzielającej pasek od banera (z ✦ na niej) — zamiast osobnej
-   kreski pod napisem; dlatego pozycje mają pełną wysokość paska (49px), a ich dolna krawędź leży na tej linii. */
+
 @media (min-width: 1024px) {
   body.shinden-list .navigation-list--top .navigation-list-item > a[href="https://shinden.pl"] { --ik-nav: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 11 12 4l8.5 7'/%3E%3Cpath d='M5.5 9.5V20h13V9.5'/%3E%3Cpath d='M10 20v-5.5h4V20'/%3E%3C/svg%3E"); }
   body.shinden-list .navigation-list--top .navigation-list-item > a[href*="/animelist/"]       { --nazwa: var(--menu-anime); }
@@ -817,20 +790,18 @@ body.shinden-list .navigation-background {
     font-size: clamp(10.5px, calc(10.5px + (100vw - 1024px) * .0035), 12.5px);
     letter-spacing: clamp(.05em, calc(.05em + (100vw - 1024px) * .0002), .12em);
   }
-  /* Shinden jako sama ikonka domku, oceny skinów z gwiazdką */
   body.shinden-list .navigation-list--top .navigation-list-item > a[href="https://shinden.pl"] { padding-left: clamp(6px, calc(6px + (100vw - 1024px) * .012), 12px) !important; padding-right: clamp(6px, calc(6px + (100vw - 1024px) * .012), 12px) !important; }
   body.shinden-list .navigation-list--top .navigation-list-item > a[href="https://shinden.pl"]::after { content: none; }
   body.shinden-list .navigation-list--top .navigation-list-item > a:is([href="https://shinden.pl"], [href*="rated-skins"])::before {
     content: ""; flex: none; width: 16px; height: 16px;
     background: var(--gold); -webkit-mask: var(--ik-nav) center / contain no-repeat; mask: var(--ik-nav) center / contain no-repeat;
     opacity: .85; transition: background .2s, filter .2s, opacity .2s;
-    transform: translateY(-1px);   /* gwiazdka i domek mają więcej „masy” w dolnej połowie (szersze ramiona, ściany) —
-                                      zmierzone na pikselach: bez tego środek ciężkości ikonki był 1,1px niżej niż napisu */
+    transform: translateY(-1px);
   }
   body.shinden-list .navigation-list--top .navigation-list-item > a[href="https://shinden.pl"]::before { width: 18px; height: 18px; }
   body.shinden-list .navigation-list--top .navigation-list-item:hover > a:is([href="https://shinden.pl"], [href*="rated-skins"])::before,
   body.shinden-list .navigation-list--top .navigation-list-item > a:is([href="https://shinden.pl"], [href*="rated-skins"]).is-active::before { background: var(--gold-light); opacity: 1; filter: drop-shadow(0 0 4px rgba(var(--gold-rgb), .7)); }
-  /* podpisy grup i ✦ między pozycjami w grupie */
+  
   body.shinden-list .navigation-list--top .navigation-list-item:is(:has(> a[href*="/animelist/"]), :has(> a[href*="shinden.pl/series"]))::before {
     content: var(--grupa); margin: 0 2px 0 clamp(6px, calc(6px + (100vw - 1024px) * .025), 20px);
     padding: 4px 0 4px clamp(6px, calc(6px + (100vw - 1024px) * .015), 14px);
@@ -842,15 +813,14 @@ body.shinden-list .navigation-background {
     margin-left: clamp(6px, calc(6px + (100vw - 1024px) * .025), 20px); padding-left: clamp(4px, calc(4px + (100vw - 1024px) * .008), 8px);
     background: linear-gradient(rgba(var(--gold-rgb), .4), rgba(var(--gold-rgb), .4)) left center / 1px 22px no-repeat;
   }
-  /* „Moja lista” (na cudzych listach po zalogowaniu): ten sam adres co lista anime, ale stoi za ocenami skinów —
-     bez podpisu grupy, z własną nazwą i kreską jak oceny skinów */
+
   body.shinden-list .navigation-list--top .navigation-list-item:is(:has(> a[href*="rated-skins"])) ~ .navigation-list-item {
     margin-left: clamp(6px, calc(6px + (100vw - 1024px) * .025), 20px); padding-left: clamp(4px, calc(4px + (100vw - 1024px) * .008), 8px);
     background: linear-gradient(rgba(var(--gold-rgb), .4), rgba(var(--gold-rgb), .4)) left center / 1px 22px no-repeat;
   }
   body.shinden-list .navigation-list--top .navigation-list-item:is(:has(> a[href*="rated-skins"])) ~ .navigation-list-item::before { content: none !important; }
   body.shinden-list .navigation-list--top .navigation-list-item:is(:has(> a[href*="rated-skins"])) ~ .navigation-list-item > a { --nazwa: var(--menu-moja-lista); }
-  /* najechanie: przygaszony odcinek linii paska; aktywna: jasny odcinek z poświatą i ✦ na linii */
+
   body.shinden-list .navigation-list--top .navigation-list-item:hover > a:is([href="https://shinden.pl"], [href*="/animelist/"], [href*="/mangalist/"], [href*="/novelslist/"], [href*="shinden.pl/series"], [href*="shinden.pl/manga"], [href*="rated-skins"]):not(.is-active) {
     background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb), .75), transparent) center bottom / 80% 1px no-repeat !important;
   }
@@ -867,9 +837,6 @@ body.shinden-list .navigation-background {
 }
 
 /* ---------- baner: lśniący nick + postać siedząca na murze ---------- */
-/* linia „siedzenia” obrazka wypada dokładnie na dolnej krawędzi banera,
-   a nogi wystają poniżej, ponad listą (z-index wyżej niż treść) */
-/* --pad: margines wokół obrazka, żeby poświata nie była ucinana przez maskę */
 body.shinden-list .hero-image-container::after {
   --pad: 32px;
   content: "";
@@ -885,10 +852,6 @@ body.shinden-list .hero-image-container::after {
   z-index: 5;
   pointer-events: none;
 }
-/* baner skalowany tak, żeby linia --baner-krawedz (mur) wypadała na dolnej krawędzi banera */
-/* złota krawędź muru, na której siedzi postać — rysowana jako najwyższa warstwa tła ::before, wydłużonego o 1px
-   na miejsce dolnej (przezroczystej) ramki. Wcześniej był to border-image na samym banerze, ale Firefox
-   (z overflow-x: clip na banerze) go nie rysował i linia znikała */
 body.shinden-list .hero-image-container::before {
   --bw: max(100vw, calc(var(--hero-h) / var(--baner-krawedz) * var(--baner-proporcje)));
   bottom: -1px;
@@ -901,18 +864,13 @@ body.shinden-list .hero-image-container {
   border-bottom: 1px solid transparent;
   box-shadow: 0 2px 22px rgba(var(--accent-rgb), .4) !important;
 }
-/* lista odsuwa się w dół, żeby nogi zwisały nad nagłówkiem panelu, a nie nad okładkami */
+
 body.shinden-list .columns-wrapper {
   padding-top: max(30px, calc(var(--postac-h) * (1 - var(--postac-siad)) - var(--postac-nogi-na-liscie)));
 }
-/* ustawienia: tytuł stoi w panelu (na listach jest nad nim), więc nogi nie mogą wchodzić na panel —
-   inaczej zasłaniały koniec długich tytułów („Zarządzanie listami własnymi”, „Import wyglądu użytkownika”) */
 body.shinden-list.settings { --postac-nogi-na-liscie: 0px; }
-/* cudza lista po zalogowaniu ma więcej przycisków nad listą („Porównaj oceny”, „Importuj tę listę”) —
-   rząd sięga pod nogi postaci i je zasłaniały; wtedy panel też zaczyna się pod stopami */
 body.shinden-list:has(.view-content-header-options > :nth-child(4)) { --postac-nogi-na-liscie: 0px; }
-/* to wolne miejsce pod banerem wykorzystują: szukajka, nazwa listy („Oglądam”) i przełącznik widoku —
-   stoją w jednym rzędzie tuż nad panelami, a nogi postaci zwisają między nimi */
+
 @media (min-width: 1024px) {
   body.shinden-list .sidebar-input {
     position: absolute;
@@ -936,26 +894,20 @@ body.shinden-list:has(.view-content-header-options > :nth-child(4)) { --postac-n
   }
   body.shinden-list .view-content-header-options { margin-top: 0; }
 }
-/* lista własna: nazwa ma do 100 znaków i rosła w górę, pod postać i na baner. Lewa krawędź postaci wypada
-   w 50% szerokości panelu + 20px (--postac-x) − 125 px (połowa panelu bocznego z odstępem, układ jest wyśrodkowany),
-   więc tytuł (od 16px) kończy się 16 px przed nią i ma najwyżej 2 linie z wielokropkiem (na telefonie i tablecie 3) */
+
 body.shinden-list.custom-list .view-content-h3 {
   display: -webkit-box !important; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-  line-height: 30px !important;   /* całe piksele: przy ułamkowej wysokości prześwitywała góra następnej linii */
+  line-height: 30px !important;
 }
 @media (min-width: 1024px) {
   body.shinden-list.custom-list .view-content-h3 { max-width: calc(50% - 137px); -webkit-line-clamp: 2; }
 }
-/* telefon i tablet: tytuł stoi w panelu, a przełącznik widoku (108 px) w jego prawym górnym rogu — długa nazwa wchodziła pod niego */
 @media (max-width: 1023px) {
   body.shinden-list.custom-list .view-content-h3 { padding-right: 120px !important; }
 }
-/* lista ukryta: Shinden nie podaje nazwy (pusty h3, klasa body „undefined”) — zostawała sama ozdoba */
 body.shinden-list.custom-list .view-content-h3:empty::before { content: var(--lista-bez-nazwy); }
 
-/* ---------- szukajka: taka sama jak pola w panelu (Tag…, Typ…) ----------
-   tło i ramka biorą się z reguł .input-wrapper wyżej; tu tylko wysokość pól,
-   kolor lupy i to, żeby lupa nie znikała po wpisaniu tekstu */
+/* ---------- szukajka ---------- */
 body.shinden-list .sidebar-input .input-wrapper { height: 35px !important; }
 body.shinden-list .sidebar-input .input-element {
   height: 35px !important;
@@ -967,7 +919,6 @@ body.shinden-list .sidebar-input .input-background { height: 100%; padding: 0 12
 body.shinden-list .sidebar-input .input-icon svg { color: var(--muted) !important; transition: color .2s; }
 body.shinden-list .sidebar-input .input-wrapper:focus-within .input-icon svg { color: var(--gold-light) !important; }
 body.shinden-list .sidebar-input .input-placeholder { white-space: nowrap; }
-/* lupa zostaje zawsze; podpowiedź gaśnie po kliknięciu i gdy w polu jest tekst (Shinden dodaje wtedy .is-hidden) */
 body.shinden-list .sidebar-input .input-background { opacity: 1 !important; }
 body.shinden-list .sidebar-input .input-element:focus + .input-background .input-placeholder,
 body.shinden-list .sidebar-input .input-background.is-hidden .input-placeholder { opacity: 0; }
@@ -975,15 +926,15 @@ body.shinden-list .header-wrapper::before,
 body.shinden-list .header-wrapper::after {
   position: absolute;
   left: max(30px, calc(50% - 620px));
-  z-index: 2;   /* nad dużą postacią z boku (z-index 1), a treść strony (z-index 2, dalej w kodzie) i tak wychodzi nad nick — np. okienko podglądu okładki */
+  z-index: 2;
   pointer-events: none;
 }
-/* wstęga nad nickiem zależy od rodzaju listy (klasa na <body>) */
+
 body.shinden-list       { --nick-sub: var(--nick-sub-anime); }
 body.shinden-list.manga { --nick-sub: var(--nick-sub-manga); }
 body.shinden-list.novel { --nick-sub: var(--nick-sub-novel); }
 body.shinden-list.settings { --nick-sub: var(--nick-sub-ustawienia); }
-/* wstęga z wcięciami na końcach, jak chorągwie na murze */
+
 body.shinden-list .header-wrapper::before {
   content: var(--nick-sub);
   bottom: 142px;
@@ -998,14 +949,13 @@ body.shinden-list .header-wrapper::before {
     linear-gradient(var(--gold), var(--gold)) bottom / 100% 1px no-repeat,
     linear-gradient(90deg, #5a1650, #7a1d5c 50%, #3b1660);
   clip-path: polygon(0 0, 100% 0, calc(100% - 11px) 50%, 100% 100%, 0 100%, 11px 50%);
-  /* przy wejściu: wstęga rozwija się od środka */
   animation: wstega-rozwin .9s cubic-bezier(.2, .8, .2, 1) .2s backwards;
 }
 @keyframes wstega-rozwin {
   from { clip-path: polygon(50% 0, 50% 0, 50% 50%, 50% 100%, 50% 100%, 50% 50%); }
   to   { clip-path: polygon(0 0, 100% 0, calc(100% - 11px) 50%, 100% 100%, 0 100%, 11px 50%); }
 }
-/* nick: złoto-liliowy napis, po którym co chwilę przebiega blask */
+
 body.shinden-list .header-wrapper::after {
   content: var(--nick);
   bottom: 40px;
@@ -1019,26 +969,18 @@ body.shinden-list .header-wrapper::after {
   -webkit-background-clip: text;
           background-clip: text;
   filter: drop-shadow(0 0 14px rgba(var(--accent-rgb), .75)) drop-shadow(0 2px 2px rgba(0, 0, 0, .6));
-  /* blask co 7 s + „zmaterializowanie się” nicku przy wejściu */
   animation:
     nick-blask 7s ease-in-out 2s infinite,
     nick-czar 1.2s cubic-bezier(.2, .8, .2, 1) .6s backwards;
 }
-/* nick = prawdziwy link z paska nawigacji (nick właściciela listy, prowadzi do jego profilu),
-   przeniesiony na baner i ostylowany jak napis wyżej — dzięki temu skin pokazuje właściwy nick
-   na każdej liście, bez wpisywania --nick. Tylko ≥1024px (niżej link siedzi w menu hamburgera);
-   gdy linku nie ma, zostaje napis z --nick (::after) */
+
 @media (min-width: 1024px) {
   body.shinden-list .header-wrapper:has(.navigation-list-item a[href*="shinden.pl/user/"])::after { content: none; }
-  /* pasek (z nim nick) pod siedzącą postacią (z-index 5), tak jak wcześniej napis z --nick — długi nick
-     chowa się za nią zamiast na nią wchodzić; Shinden daje tu 11 */
   body.shinden-list .navigation-wrapper { z-index: 4 !important; }
   body.shinden-list .navigation-list-item a[href*="shinden.pl/user/"] {
-    position: absolute;   /* względem .navigation-wrapper, który zaczyna się razem z banerem */
+    position: absolute;
     left: max(30px, calc(50% - 620px));
-    /* bez transform i bez overflow: w Firefoksie złoty gradient w literach (background-clip: text)
-       razem z transform/overflow znikał i nicku nie było widać — dawny napis (::after) ich nie miał */
-    top: calc(var(--hero-h) - 40px - 1.1em);   /* 1.1em = wysokość linii nicku (80px × 1.1) */
+    top: calc(var(--hero-h) - 40px - 1.1em);
     max-width: none;
     overflow: visible;
     text-overflow: clip;
@@ -1048,9 +990,6 @@ body.shinden-list .header-wrapper::after {
     font-size: 80px !important;
     font-weight: 700;
     line-height: 1.1;
-    /* letter-spacing i background BEZ !important — animacje (nick-czar rozsuwa litery, nick-blask przesuwa
-       gradient) nie mogą nadpisać wartości z !important, więc na desktopie wejście i blask wyglądały inaczej
-       niż w zapasowym napisie na telefonie. Selektor linku i tak wygrywa z regułami paska */
     letter-spacing: .05em;
     text-transform: uppercase;
     color: transparent !important;
@@ -1069,12 +1008,8 @@ body.shinden-list .header-wrapper::after {
     outline: none;
   }
 }
-/* ---------- ikony paska: złote kontury ----------
-   Cienkie złote ikony konturowe z poświatą (jak ikony w panelu „Listy”); po najechaniu jaśnieją.
-   Głośnik, który gra, świeci na różowo; zębatka na stronach ustawień — jaśniejszym złotem.
-   Oko (i przekreślone oko po przełączeniu), głośnik (wyłączony / gra — aria-pressed) i zębatka zamiast
-   napisu „Ustawienia” (zębatka od 1024px; w menu mobilnym zostaje napis). Ikony to maski SVG (--ik) na ::before;
-   oryginalne ikony Shindena są ukryte. Tekst linku ustawień zostaje w kodzie (czytniki ekranu) */
+
+/* ---------- ikony paska ---------- */
 body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item .navigation-button:is(:has(.icon-eye), :has(.icon-eyeSlash), [title*="muzyk"], [aria-label*="muzyk"]) { --ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E"); }
 body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item .navigation-button:has(.icon-eyeSlash) { --ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M4 4l16 16'/%3E%3C/svg%3E"); }
 body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item .navigation-button:is([title*="muzyk"], [aria-label*="muzyk"]) { --ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 9.5h3.5L12 5.5v13l-4.5-4H4z'/%3E%3Cpath d='M16 9.5l5 5M21 9.5l-5 5'/%3E%3C/svg%3E"); }
@@ -1105,6 +1040,7 @@ body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-i
 body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item .navigation-button:is(:has(.icon-eye), :has(.icon-eyeSlash), [title*="muzyk"], [aria-label*="muzyk"]):hover, body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item .navigation-button:is(:has(.icon-eye), :has(.icon-eyeSlash), [title*="muzyk"], [aria-label*="muzyk"]):focus-visible { outline: none; }
 body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item .navigation-button:is(:has(.icon-eye), :has(.icon-eyeSlash), [title*="muzyk"], [aria-label*="muzyk"]):hover::before, body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item .navigation-button:is(:has(.icon-eye), :has(.icon-eyeSlash), [title*="muzyk"], [aria-label*="muzyk"]):focus-visible::before { background: var(--gold-light); filter: drop-shadow(0 0 6px rgba(var(--gold-rgb), .95)); }
 body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item .navigation-button[aria-pressed="true"]:is([title*="muzyk"], [aria-label*="muzyk"]) { --ik-kolor: var(--accent-2); }
+
 @media (min-width: 1024px) {
   body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item a[href^="/settings/"] {
     --ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18.66 9.84 L21.04 10.28 L21.04 13.72 L18.66 14.16 L18.24 15.18 L19.61 17.17 L17.17 19.61 L15.18 18.24 L14.16 18.66 L13.72 21.04 L10.28 21.04 L9.84 18.66 L8.82 18.24 L6.83 19.61 L4.39 17.17 L5.76 15.18 L5.34 14.16 L2.96 13.72 L2.96 10.28 L5.34 9.84 L5.76 8.82 L4.39 6.83 L6.83 4.39 L8.82 5.76 L9.84 5.34 L10.28 2.96 L13.72 2.96 L14.16 5.34 L15.18 5.76 L17.17 4.39 L19.61 6.83 L18.24 8.82z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
@@ -1119,7 +1055,7 @@ body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-i
     font-size: 0 !important;
     letter-spacing: 0 !important;
     color: transparent !important;
-    clip-path: none !important;   /* aktywna pozycja paska ma kształt chorągiewki/równoległoboku — tu by przycinał */
+    clip-path: none !important;
     background: none !important;
     transition: box-shadow .2s, background .2s;
   }
@@ -1135,12 +1071,11 @@ body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-i
   }
   body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item a[href^="/settings/"]:hover, body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item a[href^="/settings/"]:focus-visible { outline: none; }
   body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item a[href^="/settings/"]:hover::before, body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item a[href^="/settings/"]:focus-visible::before { background: var(--gold-light); filter: drop-shadow(0 0 6px rgba(var(--gold-rgb), .95)); transform: rotate(45deg); }
-  body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item a[href^="/settings/"].is-active { --ik-kolor: var(--gold-light); }   /* jesteś w ustawieniach */
+  body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item a[href^="/settings/"].is-active { --ik-kolor: var(--gold-light); }
 }
-/* „Zaloguj” (widać je tylko po wylogowaniu, w miejscu zębatki ustawień): złota obwódka-pigułka z ikonką drzwi ze strzałką
-   i napisem — wcześniej był to zwykły napis paska, bez niczego, co by go wyróżniało */
+
 @media (min-width: 1024px) {
-  body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item:has(> a[href*="/main/login"]) { display: flex; align-items: center; }   /* pozycja ma wysokość paska — przycisk na środku */
+  body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item:has(> a[href*="/main/login"]) { display: flex; align-items: center; }
   body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item a[href*="/main/login"] {
     --ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4'/%3E%3Cpath d='M10 17l5-5-5-5'/%3E%3Cpath d='M15 12H3'/%3E%3C/svg%3E");
     display: inline-flex !important; align-items: center; gap: 7px; vertical-align: middle;
@@ -1157,6 +1092,7 @@ body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-i
   body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item a[href*="/main/login"]:is(:hover, :focus-visible) { background: rgba(var(--gold-rgb), .14) !important; box-shadow: inset 0 0 0 1px var(--gold), 0 0 14px rgba(var(--accent-rgb), .5); }
   body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-item a[href*="/main/login"]:is(:hover, :focus-visible)::before { background: var(--gold-light); filter: drop-shadow(0 0 5px var(--gold)); }
 }
+
 @keyframes nick-blask {
   0%, 60%   { background-position: 100% 0; }
   100%      { background-position: 0 0; }
@@ -1168,7 +1104,6 @@ body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-i
     filter: blur(14px) drop-shadow(0 0 30px rgba(var(--accent-rgb), 1));
   }
 }
-/* mrugająca gwiazdka (nagłówki, okna) */
 @keyframes gwiazdka {
   0%, 100% { opacity: 1; transform: scale(1) rotate(0); }
   50%      { opacity: .35; transform: scale(.7) rotate(45deg); }
@@ -1181,15 +1116,12 @@ body.shinden-list .navigation-list:not(.navigation-list--top) .navigation-list-i
   body.shinden-list .cell-tile-wrapper:hover .cell-tile-link::after { animation: none !important; }
 }
 @media (max-width: 767px) {
-  /* na telefonie nogi zwisają w pustym miejscu nad wyszukiwarką */
   body.shinden-list { --hero-h: 260px; --postac-h: 250px; --postac-x: calc(100% - 190px); --postac-nogi-na-liscie: 0px; }
   body.shinden-list .header-wrapper::before { bottom: 100px; font-size: 10px; padding: 4px 20px 3px; }
   body.shinden-list .header-wrapper::after { font-size: 46px; bottom: 36px; }
 }
 
-/* ---------- panele: złota ramka z ozdobnymi narożnikami ----------
-   Tło i ramka są na osobnej warstwie (::before), tak jak w motywie bazowym —
-   dzięki temu okienko podglądu okładki (position: fixed) nie jest niczym ucinane. */
+/* ---------- panele ---------- */
 body.shinden-list .view-content-wrapper {
   background: transparent !important;
   border: 0 !important;
@@ -1228,7 +1160,8 @@ body.shinden-list .view-content-h3::after {
   text-shadow: 0 0 10px var(--accent-2);
   animation: gwiazdka 2.4s ease-in-out infinite;
 }
-/* ---------- statystyki: karty ---------- */
+
+/* ---------- statystyki ---------- */
 body.shinden-list .statsPanel-wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -1253,7 +1186,6 @@ body.shinden-list .statsPanel-header {
   text-transform: uppercase;
   color: var(--gold) !important;
 }
-/* w karcie: siatka małych pól — duża złota liczba, pod nią drobny opis (zamiast wierszy z kropkami) */
 body.shinden-list .statsPanel-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; padding: 0; margin: 0; }
 body.shinden-list .statsPanel-list-item {
   display: flex; flex-direction: column-reverse; align-items: center; justify-content: flex-end; gap: 3px;
@@ -1270,20 +1202,15 @@ body.shinden-list .statsPanel-item-count {
   font-family: var(--font-label) !important; font-size: 18px !important; line-height: 1.1;
   color: var(--gold-light) !important; text-shadow: 0 0 8px rgba(var(--gold-rgb), .4);
 }
-/* od 1024px wszystkie karty statystyk w jednym rzędzie, ile by ich nie było (anime ma 4, manga i nowelki 3) —
-   wcześniej czwarta karta anime („Kategoria wiekowa”) spadała do nowego rzędu; kafelki w kartach węższe, żeby w każdej karcie mieściły się co najmniej 2 w rzędzie */
 @media (min-width: 1024px) {
   body.shinden-list .statsPanel-wrapper { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 12px; }
   body.shinden-list .statsPanel-row { padding-left: 8px !important; padding-right: 8px !important; }
   body.shinden-list .statsPanel-list { grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); }
   body.shinden-list .statsPanel-list-item { padding: 8px 3px 7px !important; }
-  /* najdłuższe słowo opisu („PRZECZYTANYCH” w mandze) ma przy 8px ok. 72px — mieści się w kafelku 78px */
   body.shinden-list .statsPanel-item-title { font-size: 8px !important; letter-spacing: .04em !important; }
 }
 
-/* ---------- sidebar: ramka, kolory statusów ----------
-   Tło i ramka na osobnej warstwie (::before), jak w panelu listy — nic, co wychodzi z panelu
-   (rozwijane listy, dymek z rokiem na suwaku, okno zaawansowanych tagów), nie jest ucinane. */
+/* ---------- sidebar ---------- */
 @media (min-width: 1024px) {
   body.shinden-list .sidebar-wrapper {
     position: relative;
@@ -1306,9 +1233,7 @@ body.shinden-list .statsPanel-item-count {
     box-shadow: inset 0 0 0 4px rgba(var(--bg-rgb), .4), inset 0 0 0 5px rgba(var(--gold-rgb), .08), 0 14px 40px rgba(0, 0, 0, .45);
   }
 }
-/* otwarta lista albo okno tagów — panel boczny nad panelem listy (który jest dalej w kodzie strony) */
 body.shinden-list .sidebar-wrapper:has(.modal-wrapper, [class$="-menu"]) { position: relative; z-index: 10; }
-/* nagłówki sekcji: tekst + cienka złota linia do prawej krawędzi */
 body.shinden-list .sidebarList-header,
 body.shinden-list .sidebar-group-header,
 body.shinden-list .MuiAccordionSummary-content {
@@ -1323,11 +1248,9 @@ body.shinden-list .sidebarList-header::after,
 body.shinden-list .sidebar-group-header::after,
 body.shinden-list .MuiAccordionSummary-content::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line), transparent); }
 body.shinden-list .sidebar-group > :is(.sidebarList-header, .sidebar-group-header) { width: 100%; }
-/* nagłówek panelu ustawień („Ustawienia”): Shinden podkreśla go jasną kreską — jak nagłówki panelu list */
 body.shinden-list .sidebar-group-header { padding: 0 !important; border: 0 !important; text-decoration: none !important; }
 body.shinden-list .sidebarFilter-header { display: flex; align-items: center; gap: 12px; }
 body.shinden-list .MuiAccordionSummary-root.variant-sidebar { height: auto !important; }
-/* margin-right: 0 — MUI daje -12px, przez co strzałka „Listy własne” wystawała poza panel i na telefonie poszerzała stronę o 2 px */
 body.shinden-list .MuiAccordionSummary-expandIcon { padding: 4px !important; margin-left: 6px !important; margin-right: 0 !important; }
 body.shinden-list .checkbox-label { margin: 4px 0 10px; }
 body.shinden-list .sidebar-list-item > a { font-size: 16px; font-weight: 500; }
@@ -1337,19 +1260,13 @@ body.shinden-list .sidebar-list-item > a[href*="/skip"]        { --st: var(--st-
 body.shinden-list .sidebar-list-item > a[href*="/hold"]        { --st: var(--st-hold); }
 body.shinden-list .sidebar-list-item > a[href*="/dropped"]     { --st: var(--st-dropped); }
 body.shinden-list .sidebar-list-item > a[href*="/plan"]        { --st: var(--st-plan); }
-/* ikona i napis w jednej osi: Shinden ustawia ikonę przez vertical-align: middle, czyli na środku
-   małych liter — przy wielkich („O”, „W”) ikona wyglądała na opuszczoną o 1–2 px */
 body.shinden-list .sidebar-list-title { display: inline-flex !important; align-items: center; }
 body.shinden-list .sidebar-icon-wrapper,
 body.shinden-list .sidebar-icon-wrapper .icon-wrapper { display: flex !important; align-items: center; }
 body.shinden-list .sidebar-icon-wrapper svg { display: block; }
 body.shinden-list .sidebar-list-item > a .sidebar-icon-wrapper { color: var(--st, var(--accent)) !important; }
 body.shinden-list .sidebar-list-item > a .sidebar-icon-wrapper svg { filter: drop-shadow(0 0 4px var(--st, var(--accent))); }
-/* panel „Listy”: zamiast kolorowych „pastylek” Shindena — złote ikony liniowe jak ornamenty motywu
-   (oko, znacznik, przekreślony okrąg, klepsydra, krzyżyk, pióro, gwiazda); kolor statusu przechodzi na licznik.
-   Tylko w panelu list (.sidebarList-wrapper) — panel ustawień ma te same klasy i zostaje z ikonami Shindena.
-   Ikona to maska na ::before, więc kolor ustawia się zwykłym background; pozycja bez dopasowania
-   (np. lista własna) dostaje gwiazdę */
+
 body.shinden-list .sidebarList-wrapper .sidebar-list-item > a .sidebar-icon-wrapper { width: 16px; height: 16px; margin-right: 6px; --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2.5l2.2 7.3 7.3 2.2-7.3 2.2L12 21.5l-2.2-7.3L2.5 12l7.3-2.2z'/%3E%3C/svg%3E"); }
 body.shinden-list .sidebarList-wrapper .sidebar-list-item > a .sidebar-icon-wrapper svg { display: none !important; }
 body.shinden-list .sidebarList-wrapper .sidebar-list-item > a .sidebar-icon-wrapper::before {
@@ -1364,9 +1281,7 @@ body.shinden-list .sidebarList-wrapper .sidebar-list-item > a .sidebar-icon-wrap
 }
 body.shinden-list .sidebarList-wrapper .sidebar-list-item > a:hover .sidebar-icon-wrapper::before,
 body.shinden-list .sidebarList-wrapper .sidebar-list-item > a.is-active .sidebar-icon-wrapper::before { background: var(--gold-light); filter: drop-shadow(0 0 5px rgba(var(--gold-rgb), .9)); }
-/* panel ustawień: złote ikony liniowe jak w panelu list (zamiast fioletowych wypełnionych Shindena):
-   koło zębate, różdżka, nawiasy kodu, pobieranie, lista, gwiazda, dwie kolumny. Ten sam mechanizm maski
-   na ::before co w panelu „Listy”; pozycja bez dopasowania dostaje gwiazdę */
+
 body.shinden-list .sidebar-group-wrapper .sidebar-list-item > a .sidebar-icon-wrapper { width: 16px; height: 16px; margin-right: 8px; --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z'/%3E%3C/svg%3E"); }
 body.shinden-list .sidebar-group-wrapper .sidebar-list-item > a .sidebar-icon-wrapper svg { display: none !important; }
 body.shinden-list .sidebar-group-wrapper .sidebar-list-item > a .sidebar-icon-wrapper::before {
@@ -1391,12 +1306,12 @@ body.shinden-list .sidebar-group-wrapper .sidebar-list-item > a[href*="/view-com
 body.shinden-list .sidebar-group-wrapper .sidebar-list-item > a[href*="/rate-skin"] .sidebar-icon-wrapper { --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z'/%3E%3C/svg%3E"); }
 body.shinden-list .sidebar-group-wrapper .sidebar-list-item > a[href*="/import-skin"] .sidebar-icon-wrapper { --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v11M7.5 10.5L12 15l4.5-4.5M4.5 19.5h15'/%3E%3C/svg%3E"); }
 body.shinden-list .sidebarList-wrapper .sidebar-list-item > a:not([href*="/all"]) .sidebar-list-counter { color: var(--st, var(--muted)) !important; text-shadow: 0 0 6px color-mix(in srgb, var(--st, transparent) 50%, transparent); }
-body.shinden-list .sidebarList-wrapper .sidebar-list-item > a[href*="/in-progress"] .sidebar-icon-wrapper { --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E"); }   /* oko */
-body.shinden-list .sidebarList-wrapper .sidebar-list-item > a[href*="/completed"] .sidebar-icon-wrapper { --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 12.5l4.5 4.5L19.5 6.5'/%3E%3C/svg%3E"); }   /* znacznik */
-body.shinden-list .sidebarList-wrapper .sidebar-list-item > a[href*="/skip"] .sidebar-icon-wrapper { --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8'/%3E%3Cpath d='M6.5 17.5l11-11'/%3E%3C/svg%3E"); }   /* przekreślony okrąg */
-body.shinden-list .sidebarList-wrapper .sidebar-list-item > a[href*="/hold"] .sidebar-icon-wrapper { --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 3.5h10M7 20.5h10M8 3.5c0 4.5 8 4.5 8 8.5s-8 4-8 8.5M16 3.5c0 4.5-8 4.5-8 8.5s8 4 8 8.5'/%3E%3C/svg%3E"); }   /* klepsydra */
-body.shinden-list .sidebarList-wrapper .sidebar-list-item > a[href*="/dropped"] .sidebar-icon-wrapper { --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 6.5l11 11M17.5 6.5l-11 11'/%3E%3C/svg%3E"); }   /* krzyżyk */
-body.shinden-list .sidebarList-wrapper .sidebar-list-item > a[href*="/plan"] .sidebar-icon-wrapper { --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 4C12.5 4.5 7.5 9.5 6 18l-1.5 2.5M20 4c-.5 7.5-5.5 12.5-14 14M10 14l4-4'/%3E%3C/svg%3E"); }   /* pióro */
+body.shinden-list .sidebarList-wrapper .sidebar-list-item > a[href*="/in-progress"] .sidebar-icon-wrapper { --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E"); }
+body.shinden-list .sidebarList-wrapper .sidebar-list-item > a[href*="/completed"] .sidebar-icon-wrapper { --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 12.5l4.5 4.5L19.5 6.5'/%3E%3C/svg%3E"); }
+body.shinden-list .sidebarList-wrapper .sidebar-list-item > a[href*="/skip"] .sidebar-icon-wrapper { --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8'/%3E%3Cpath d='M6.5 17.5l11-11'/%3E%3C/svg%3E"); }
+body.shinden-list .sidebarList-wrapper .sidebar-list-item > a[href*="/hold"] .sidebar-icon-wrapper { --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 3.5h10M7 20.5h10M8 3.5c0 4.5 8 4.5 8 8.5s-8 4-8 8.5M16 3.5c0 4.5-8 4.5-8 8.5s8 4 8 8.5'/%3E%3C/svg%3E"); }
+body.shinden-list .sidebarList-wrapper .sidebar-list-item > a[href*="/dropped"] .sidebar-icon-wrapper { --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 6.5l11 11M17.5 6.5l-11 11'/%3E%3C/svg%3E"); }
+body.shinden-list .sidebarList-wrapper .sidebar-list-item > a[href*="/plan"] .sidebar-icon-wrapper { --ikona: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 4C12.5 4.5 7.5 9.5 6 18l-1.5 2.5M20 4c-.5 7.5-5.5 12.5-14 14M10 14l4-4'/%3E%3C/svg%3E"); }
 body.shinden-list .sidebar-list-item > a.is-active {
   background: linear-gradient(90deg, color-mix(in srgb, var(--st, var(--accent)) 22%, transparent), transparent) !important;
   border-color: transparent !important;
@@ -1413,11 +1328,10 @@ body.shinden-list .checkbox-label::before {
 body.shinden-list .checkbox-label::after { border-color: var(--gold-light) !important; background: transparent !important; }
 body.shinden-list .checkbox-label-text { color: var(--text) !important; }
 body.shinden-list .MuiSlider-root { color: var(--accent) !important; }
-/* niewidoczne pole dotyku uchwytu (MUI: 15px na boki) — przy prawym końcu suwaka wystawało poza ekran telefonu */
 body.shinden-list .MuiSlider-thumb::after { top: -8px !important; right: -8px !important; bottom: -8px !important; left: -8px !important; }
 body.shinden-list .MuiSlider-track { background: linear-gradient(90deg, var(--accent-2), var(--accent)) !important; }
 body.shinden-list .MuiSlider-rail { background: var(--muted) !important; }
-/* uchwyt: obraca się tylko klejnot (::before) — obrót całego uchwytu obracał też dymek z rokiem */
+
 body.shinden-list .MuiSlider-thumb {
   background: transparent !important;
   border: 0 !important;
@@ -1436,7 +1350,7 @@ body.shinden-list .MuiSlider-thumb::before {
 body.shinden-list .MuiSlider-thumb:is(:hover, :focus-visible, [class*="active"])::before {
   box-shadow: 0 0 6px var(--accent), 0 0 16px rgba(var(--accent-rgb), .9);
 }
-/* dymek z rokiem: mała tabliczka zamiast kropli */
+
 body.shinden-list .MuiSlider-valueLabel {
   top: -22px !important;
   left: 50% !important;
@@ -1453,7 +1367,7 @@ body.shinden-list .MuiSlider-valueLabel > span {
 }
 body.shinden-list .MuiSlider-valueLabel > span > span {
   transform: none !important;
-  background: transparent !important;   /* Shinden daje fioletowe tło wszystkiemu w dymku (.jssN *) — zasłaniało ramkę */
+  background: transparent !important;
   font-family: var(--font-label) !important;
   font-size: 11px !important;
   font-weight: 600;
@@ -1461,7 +1375,6 @@ body.shinden-list .MuiSlider-valueLabel > span > span {
   color: var(--gold-light) !important;
 }
 
-/* przyciski nad listą */
 body.shinden-list .view-content-header-button {
   font-family: var(--font-label) !important;
   font-size: 11px !important;
@@ -1483,10 +1396,7 @@ body.shinden-list .listRowDesktop-content:hover {
 }
 body.shinden-list .cellLink-link { font-size: 16px; font-weight: 600 !important; }
 
-/* status: świecący klejnot zamiast kolorowego paska */
 body.shinden-list .listRowDesktop-wrapper { border-left: 1px solid var(--line) !important; }
-/* .list-rows.list-rows: Shinden koloruje ten ::before regułą .list-rows.<status>.jsx-…::before (0,3,1),
-   która wygrywała z kolorem statusu — w widoku z okładkami klejnot miał barwy z Generatora wyglądu */
 body.shinden-list .listRowDesktop-wrapper.list-rows.list-rows::before {
   content: "";
   position: absolute;
@@ -1501,14 +1411,12 @@ body.shinden-list .listRowDesktop-wrapper.list-rows.list-rows::before {
   transition: transform .2s;
 }
 body.shinden-list .listRowDesktop-wrapper.list-rows.list-rows:hover::before { transform: rotate(45deg) scale(1.4); }
-/* „Planuję” i „Pomijam” — klejnot pusty w środku */
 body.shinden-list .listRowDesktop-wrapper.list-rows.list-rows:is(.plan, .skip)::before {
   background: var(--bg-solid);
   border: 1.5px solid var(--st);
 }
 body.shinden-list .listRowDesktop-item:first-child { padding-left: 24px !important; }
 
-/* okładki: pionowe, zaokrąglone; po najechaniu tylko podświetlenie (duży podgląd jest po lewej) */
 body.shinden-list .cellCover-image {
   width: 38px !important;
   height: 50px !important;
@@ -1525,7 +1433,6 @@ body.shinden-list .listRowDesktop-content:hover .cellCover-image {
   outline-color: var(--gold);
 }
 
-/* przycisk opcji „•••” */
 body.shinden-list .dropdown-button {
   display: flex;
   align-items: center;
@@ -1542,7 +1449,7 @@ body.shinden-list .listRowDesktop-content:hover .dropdown-button { color: var(--
 body.shinden-list .dropdown-button:hover { background: var(--accent) !important; color: #fff !important; }
 body.shinden-list .cell-options-icon { width: 16px !important; height: 16px !important; }
 
-/* ---------- karty: okładka w kształcie okna + opis POD nią ---------- */
+/* ---------- karty ---------- */
 body.shinden-list .cell-tile-wrapper { height: 100%; transition: transform .2s, filter .2s; }
 body.shinden-list .cell-tile-link {
   height: 100%;
@@ -1551,8 +1458,6 @@ body.shinden-list .cell-tile-link {
   clip-path: var(--tile-shape);
   background: var(--panel-solid);
 }
-/* okładka w proporcjach plakatu (1 : √2) — tak są robione duże okładki z Shindena (cdn …/genuine/),
-   więc boki nie są ucinane; przy 225×350 obcinało ok. 10% szerokości */
 body.shinden-list .cell-tile-background {
   flex: none;
   height: auto;
@@ -1574,9 +1479,8 @@ body.shinden-list .cell-tile-wrapper .cell-tile-info::before { display: none; }
 body.shinden-list .cell-tile-wrapper:hover { transform: translateY(-4px); }
 body.shinden-list .cell-tile-link,
 body.shinden-list .cell-tile-link * { text-decoration: none !important; }
-/* bez tekstowej etykiety statusu — status pokazuje tylko kolor poświaty (jeden wskaźnik) */
 body.shinden-list .cell-tile-info::after { display: none; }
-/* magiczny blask przebiegający ukośnie po najechaniu */
+
 body.shinden-list .cell-tile-link::after {
   content: "";
   position: absolute;
@@ -1587,8 +1491,6 @@ body.shinden-list .cell-tile-link::after {
   opacity: 0;
   pointer-events: none;
 }
-/* blask wjeżdża i wyjeżdża całkiem poza kartę, a po drodze się rozjaśnia i gaśnie — wcześniej (kremowy, ±120%) przy
-   ukośnym gradiencie na wysokiej karcie jego kawałek zostawał na karcie do końca animacji i znikał w jednej klatce */
 body.shinden-list .cell-tile-wrapper:hover .cell-tile-link::after { animation: kafel-blask 1.1s ease-in-out; }
 @keyframes kafel-blask {
   0%   { transform: translateX(-150%); opacity: 0; }
@@ -1598,22 +1500,18 @@ body.shinden-list .cell-tile-wrapper:hover .cell-tile-link::after { animation: k
 }
 body.shinden-list .cell-tile-episodes::before { content: var(--ep-label); color: var(--accent-2); }
 
-/* przycisk „•••” na kafelku (widoczny po zalogowaniu) — pojawia się po najechaniu */
 body.shinden-list .cell-tile-options { top: calc(var(--luk) * .5 + 6px) !important; right: 8px !important; }
-/* ten sam przycisk w widoku listy z okładkami — oba widoki mają jednakowe „•••” */
 body.shinden-list .cell-tile-options .dropdown-button,
 body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-content .dropdown-button,
 body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowMobile-wrapper .dropdown-button {
   width: 32px;
   height: 22px;
-  /* złota nić i złote kropki — przy słabej ramce (.45) przycisk wyglądał jak domyślny Shindena */
   background: rgba(var(--bg-rgb), .88) !important;
   color: var(--gold-light) !important;
   box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .8), 0 0 8px rgba(var(--gold-rgb), .25);
   backdrop-filter: blur(4px);
   transition: opacity .2s, background .2s, color .2s, box-shadow .2s;
 }
-/* hover: złoty medalion (fiolet z białym był zbyt podobny do hovera Shindena) */
 body.shinden-list .cell-tile-options .dropdown-button:hover,
 body.shinden-list .cell-tile-options .dropdown-button:focus-visible,
 body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-content .dropdown-button:hover,
@@ -1630,10 +1528,7 @@ body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .
   body.shinden-list .cell-tile-options .dropdown-button:focus-visible { opacity: 1; }
 }
 
-/* tytuł zawsze w 2 liniach z „…” — bez rozwijania po najechaniu (przeskakiwał i wchodził na okładkę) */
-
-/* tryb „Zaznacz wiele” (po zalogowaniu) */
-/* pasek akcji nad listą: odstęp od kafelków i ramka, żeby nie zlewał się z siatką */
+/* tryb „Zaznacz wiele” */
 body.shinden-list .bulk-update-options {
   display: flex;
   flex-wrap: wrap;
@@ -1654,33 +1549,29 @@ body.shinden-list .bulk-update-options::before {
   color: var(--gold);
 }
 body.shinden-list .bulk-update-options .view-content-header-button.disabled { opacity: .4 !important; cursor: default; }
-/* checkbox na okładce: ciemne tło, żeby był widoczny na każdej okładce */
+
 body.shinden-list .cell-tile-bulkUpdate .checkbox-label::before {
   background: rgba(var(--bg-rgb), .8) !important;
   box-shadow: 0 0 0 3px rgba(var(--bg-rgb), .55), 0 0 8px rgba(var(--accent-rgb), .5);
 }
 body.shinden-list .bulkUpdate-wrapper .checkbox-label.checked::before { background: rgba(var(--accent-rgb), .45) !important; box-shadow: 0 0 0 3px rgba(var(--bg-rgb), .55), 0 0 8px var(--accent); }
-/* zaznaczona pozycja: podświetlony kafelek / wiersz */
+
 body.shinden-list .cell-tile-item:has(.bulkUpdate-wrapper .checkbox-label.checked) .cell-tile-wrapper {
   filter: drop-shadow(0 0 1px var(--gold-light)) drop-shadow(0 0 1px var(--gold-light)) drop-shadow(0 0 12px var(--accent));
 }
 body.shinden-list .listRowDesktop-wrapper:has(.bulkUpdate-wrapper .checkbox-label.checked) .listRowDesktop-content { background: rgba(var(--accent-rgb), .14) !important; }
-/* „Zaznacz wiele” dokłada na początku wiersza kolumnę z checkboxem (46 px), więc tytuł/okładka przestają być
-   :first-child — bez tego w widoku tabeli checkbox nachodził na etykietę statusu, a etykieta na tytuł,
-   a w widoku z okładkami checkbox siedział przy górnej krawędzi na klejnocie statusu */
+
 body.shinden-list .listRowDesktop-content > .bulkUpdate-wrapper { display: flex; align-items: center; align-self: stretch; padding-left: 11px !important; box-sizing: border-box; }
 body.shinden-list .bulkUpdate-wrapper .checkbox-label { margin: 0 !important; }
-/* widok tabeli: etykieta statusu za checkboxem, tytuł za etykietą i dalej z „…” */
+
 body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-wrapper:has(.bulkUpdate-wrapper)::before { left: 52px; }
 body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-content > .bulkUpdate-wrapper + .listRowDesktop-item { padding-left: 106px !important; min-width: 0; }
 body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-content > .bulkUpdate-wrapper + .listRowDesktop-item .listRowDesktop-item-value { min-width: 0; overflow: hidden; }
-/* widok z okładkami: kolumna okładki dalej zwinięta (okładka to tło wiersza), klejnot między checkboxem a tytułem */
+
 body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-content > .bulkUpdate-wrapper + .listRowDesktop-item { flex: 0 0 0 !important; width: 0 !important; min-width: 0; padding: 0 !important; border: 0 !important; }
 body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-content > .bulkUpdate-wrapper + * + .listRowDesktop-item { padding-left: 26px !important; }
 body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-wrapper.list-rows.list-rows:has(.bulkUpdate-wrapper)::before { left: 42px; }
-/* „Zaznacz wiele”: klik w dowolne miejsce wiersza / kafelka zaznacza pozycję, a klik w tytuł (i „•••”) działa
-   normalnie. Etykieta checkboxa (to ona przełącza pole) jest rozciągnięta na cały wiersz, a kwadracik i znaczek
-   (jej ::before / ::after) ustawione od krawędzi wiersza; tytuł i „•••” leżą nad etykietą */
+
 body.shinden-list .bulkUpdate-wrapper > div,
 body.shinden-list .listRowMobile-wrapper .bulkUpdate-wrapper { position: static !important; }
 body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper, .cell-tile-bulkUpdate) .bulkUpdate-wrapper .checkbox-label {
@@ -1694,26 +1585,21 @@ body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper, .cell-til
 }
 body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper, .cell-tile-bulkUpdate) .bulkUpdate-wrapper .checkbox-label::before { bottom: auto !important; right: auto !important; margin: 0 !important; }
 body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper, .cell-tile-bulkUpdate) .bulkUpdate-wrapper .checkbox-label::after { bottom: auto !important; right: auto !important; margin: 0 !important; }
-/* wiersz na komputerze: kwadracik w kolumnie checkboxa, wyśrodkowany w pionie */
+
 body.shinden-list .listRowDesktop-wrapper .bulkUpdate-wrapper .checkbox-label::before { left: 11px !important; top: calc(50% - 7.5px) !important; }
 body.shinden-list .listRowDesktop-wrapper .bulkUpdate-wrapper .checkbox-label::after  { left: 12px !important; top: calc(50% - 8.5px) !important; }
-/* telefon: kwadracik w lewej kolumnie pod ikoną/tagiem statusu */
+
 body.shinden-list .listRowMobile-wrapper .bulkUpdate-wrapper .checkbox-label::before { left: 11px !important; top: 40px !important; }
 body.shinden-list .listRowMobile-wrapper .bulkUpdate-wrapper .checkbox-label::after  { left: calc(11px + 1px) !important; top: calc(40px - 1px) !important; }
-/* kafelek: obszar klikania to okładka (bez podpisu z tytułem — tytuł jest w przyciętej warstwie kafelka i nie da się
-   go podnieść nad etykietę); kwadracik na wysokości „•••” */
+
 body.shinden-list .cell-tile-bulkUpdate { top: 0 !important; left: 0 !important; right: 0 !important; bottom: 80px !important; width: auto !important; }
 body.shinden-list .cell-tile-bulkUpdate .checkbox-label::before { left: 10px !important; top: calc(var(--luk) * .5 + 8px) !important; }
 body.shinden-list .cell-tile-bulkUpdate .checkbox-label::after  { left: calc(10px + 1px) !important; top: calc(calc(var(--luk) * .5 + 8px) - 1px) !important; }
-/* nad etykietą: tytuł i „•••” */
+
 body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):has(.bulkUpdate-wrapper) :is(.cellLink-link, .cell-options-wrapper) { position: relative; z-index: 4; }
-/* na kafelku „•••” leży w warstwie kafelka (przy najechaniu i zaznaczeniu to osobny kontekst warstw), więc z-index
-   nie podniesie go nad etykietę — zamiast tego róg z „•••” jest wycięty z obszaru klikania etykiety (clip-path) */
 body.shinden-list .cell-tile-bulkUpdate { clip-path: polygon(0 0, calc(100% - 46px) 0, calc(100% - 46px) calc(var(--luk) * .5 + 34px), 100% calc(var(--luk) * .5 + 34px), 100% 100%, 0 100%); }
-/* zaznaczony checkbox: pełne wypełnienie w kolorze akcentu i ciemny znaczek — półprzezroczysty ginął na jasnych okładkach;
-   ciemna obwódka oddziela go od okładki */
+
 body.shinden-list .bulkUpdate-wrapper .checkbox-label::before { background: rgba(var(--bg-rgb), .85) !important; }
-/* Wiedźma: złoty medalion (pełny fiolet odstawał od złotych ramek kafelków i wierszy) */
 body.shinden-list .bulkUpdate-wrapper .checkbox-label.checked::before {
   background: linear-gradient(180deg, var(--gold-light), var(--gold)) !important;
   border-color: var(--gold-light) !important;
@@ -1721,9 +1607,6 @@ body.shinden-list .bulkUpdate-wrapper .checkbox-label.checked::before {
 }
 body.shinden-list .bulkUpdate-wrapper .checkbox-label.checked::after { border-color: rgb(var(--bg-rgb)) !important; }
 
-/* status: magiczna poświata w kolorze statusu, biegnie po łuku karty */
-/* ten sam kolor w spoczynku i po najechaniu, zmienia się tylko promień poświaty — przejście z color-mix() do koloru
-   Firefox potrafił interpolować przez inny kolor, po czym przeskakiwał na właściwy */
 body.shinden-list .cell-tile-wrapper {
   filter: drop-shadow(0 0 1px var(--st)) drop-shadow(0 0 1px var(--st)) drop-shadow(0 0 4px var(--st));
 }
@@ -1731,12 +1614,9 @@ body.shinden-list .cell-tile-wrapper:hover {
   filter: drop-shadow(0 0 1px var(--st)) drop-shadow(0 0 1px var(--st)) drop-shadow(0 0 14px var(--st));
 }
 
-
-/* ---------- podgląd okładki po najechaniu na tytuł (widok tabeli) ----------
-   Shinden sam doczytuje okładkę do okienka .rowTitleInfo — tu tylko wygląd „magicznego zwierciadła”
-   i animacja. <img> powstaje od nowa przy każdym tytule, więc animacja odpala się za każdym razem. */
+/* ---------- podgląd okładki ---------- */
 body.shinden-list .rowTitleInfo-wrapper {
-  left: max(25px, calc(50% - 625px)) !important;   /* nad kolumną panelu bocznego */
+  left: max(25px, calc(50% - 625px)) !important;
   width: 236px !important;
   filter: drop-shadow(0 0 1px var(--gold)) drop-shadow(0 0 18px rgba(var(--accent-rgb), .55));
   transition: opacity .15s, visibility .15s !important;
@@ -1749,7 +1629,7 @@ body.shinden-list .rowTitleInfo-inner {
   box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .5), inset 0 0 30px rgba(var(--accent-rgb), .12) !important;
 }
 body.shinden-list .rowTitleInfo-wrapper.is-visible .rowTitleInfo-inner { animation: podglad-wejscie .35s ease-out; }
-/* nagłówek nad okładką */
+
 body.shinden-list .rowTitleInfo-inner::before {
   content: "✦ WIZJA ✦";
   display: block;
@@ -1761,12 +1641,11 @@ body.shinden-list .rowTitleInfo-inner::before {
   letter-spacing: .3em;
   color: var(--gold);
 }
-/* ramka dopasowana do okładki (Shinden daje okładkę 180 px w szerszym polu, a obrazek jako inline-block
-   zostawiał pod sobą pasek pustego miejsca) */
+
 body.shinden-list .rowTitleInfo-cover { width: fit-content !important; max-width: 100%; margin: 0 auto; }
 body.shinden-list .rowTitleInfo-cover-background { position: relative; width: fit-content; margin: 0 auto; border-radius: 80px 80px 6px 6px / 40px 40px 6px 6px; overflow: hidden; }
 body.shinden-list .rowTitleInfo-cover-background-image > div { display: block !important; }
-/* lekka winieta na okładce */
+
 body.shinden-list .rowTitleInfo-cover-background::after {
   content: "";
   position: absolute;
@@ -1777,11 +1656,11 @@ body.shinden-list .rowTitleInfo-cover-background::after {
   box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .4);
   border-radius: inherit;
 }
-/* okładka: wyłania się z mgły */
+
 body.shinden-list .rowTitleInfo-cover-background-image img:not([aria-hidden]) {
   animation: podglad-czar .6s ease-out;
 }
-/* zaklęcie: ze środka okładki rozchodzi się fala światła, a po bokach na chwilę zapalają się iskry */
+
 body.shinden-list .rowTitleInfo-cover-background-image > div::after {
   content: "";
   position: absolute;
@@ -1832,7 +1711,7 @@ body.shinden-list .rowTitleInfo-cover-background-image > div::before {
   body.shinden-list .rowTitleInfo-cover-background-image > div::before,
   body.shinden-list .rowTitleInfo-cover-background-image > div::after { display: none; }
 }
-/* treść okienka: oceny, status i opis serii */
+
 body.shinden-list .rowTitleInfo-inner :is(.ctr-header, .cts-header, .ctd-header) {
   margin: 10px 0 4px !important;
   font-family: var(--font-label) !important;
@@ -1848,7 +1727,7 @@ body.shinden-list .rowTitleInfo-inner :is(.ctr-list-title, .cts-value, .ctd-desc
 }
 body.shinden-list .rowTitleInfo-inner .ctr-list-ratio { font-family: var(--font-label) !important; color: var(--accent-2) !important; font-size: 11px !important; }
 body.shinden-list .rowTitleInfo-inner .cts-status-value { color: var(--accent-light) !important; }
-/* opis skrócony do kilku linii z wygaszeniem, żeby okienko mieściło się na ekranie */
+
 body.shinden-list .rowTitleInfo-inner .ctd-description {
   max-height: 7.2em;
   overflow: hidden;
@@ -1857,8 +1736,6 @@ body.shinden-list .rowTitleInfo-inner .ctd-description {
           mask-image: linear-gradient(to bottom, #000 60%, transparent);
 }
 
-/* podgląd pozycji po najechaniu na tytuł — treść pod okładką (porównanie: narzedzia/podglad-tytulu/) */
-/* nagłówki sekcji jak w panelu bocznym: złote kapitaliki + linia do prawej, bez podkreślenia i dwukropka Shindena */
 body.shinden-list .rowTitleInfo-inner :is(.ctr-header, .cts-header, .ctd-header) {
   display: flex; align-items: center; gap: 8px;
   margin: 14px 0 7px !important;
@@ -1874,7 +1751,7 @@ body.shinden-list .rowTitleInfo-inner .ctd-header::before { content: "Opis"; }
 body.shinden-list .rowTitleInfo-inner :is(.ctr-header, .cts-header, .ctd-header)::after {
   content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(var(--gold-rgb), .5), transparent);
 }
-/* oceny: siatka 2×2 małych pól, ocena większa i złota */
+
 body.shinden-list .rowTitleInfo-inner .ctr-list { display: grid !important; grid-template-columns: 1fr 1fr; gap: 6px; max-width: none !important; }
 body.shinden-list .rowTitleInfo-inner .ctr-list-item {
   width: auto !important; margin: 0 !important; display: flex; flex-direction: column; align-items: center; gap: 1px;
@@ -1891,7 +1768,7 @@ body.shinden-list .rowTitleInfo-inner .ctr-list-ratio {
   color: var(--gold-light) !important; text-shadow: 0 0 8px rgba(var(--gold-rgb), .45);
   font-variant-numeric: lining-nums tabular-nums;
 }
-/* status jako pastylka, okres emisji z ikoną kalendarza */
+
 body.shinden-list .rowTitleInfo-inner .cts-status-value {
   display: inline-block; padding: 3px 11px 2px; border-radius: 999px;
   font-family: var(--font-label) !important; font-size: 10px !important; letter-spacing: .14em; text-transform: uppercase;
@@ -1903,7 +1780,7 @@ body.shinden-list .rowTitleInfo-inner .cts-value:not(.cts-status-value)::before 
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'%3E%3Crect x='3.5' y='5' width='17' height='15' rx='2'/%3E%3Cpath d='M3.5 10h17M8 3v4M16 3v4'/%3E%3C/svg%3E") center / contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'%3E%3Crect x='3.5' y='5' width='17' height='15' rx='2'/%3E%3Cpath d='M3.5 10h17M8 3v4M16 3v4'/%3E%3C/svg%3E") center / contain no-repeat;
 }
-/* ornament nad opisem, opis pełnymi liniami z „…” zamiast ucięcia w pół linii */
+
 body.shinden-list .rowTitleInfo-inner .ctd-wrapper::before {
   content: "— ❦ —"; display: block; margin: 10px 0 -4px; text-align: center; font-size: 13px; color: rgba(var(--gold-rgb), .55);
 }
@@ -1911,7 +1788,7 @@ body.shinden-list .rowTitleInfo-inner .ctd-description { max-height: none !impor
 body.shinden-list .rowTitleInfo-inner .ctd-description > div {
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; line-clamp: 6; overflow: hidden; line-height: 1.3;
 }
-/* niskie ekrany: okienko jest wyśrodkowane w pionie i ma ok. 700 px — krótszy opis, a przy bardzo niskich bez opisu */
+
 @media (max-height: 820px) {
   body.shinden-list .rowTitleInfo-inner .ctd-description > div { -webkit-line-clamp: 3; line-clamp: 3; }
   body.shinden-list .rowTitleInfo-inner .ctd-wrapper::before { display: none; }
@@ -1919,8 +1796,6 @@ body.shinden-list .rowTitleInfo-inner .ctd-description > div {
 @media (max-height: 720px) {
   body.shinden-list .rowTitleInfo-inner .ctd-wrapper { display: none; }
 }
-/* okienko leży nad panelem bocznym (poniżej 1800 px) — panel pod nim przygaszony, żeby nie wystawały spod niego
-   kawałki („Listy” u góry, „Data premiery” na dole) */
 @media (max-width: 1799px) {
   body.shinden-list .sidebar-wrapper { transition: opacity .15s; }
   body.shinden-list:has(.rowTitleInfo-wrapper.is-visible) .sidebar-wrapper { opacity: .25; }
@@ -1929,8 +1804,6 @@ body.shinden-list .rowTitleInfo-inner .ctd-description > div {
 /* =====================================================================
    KAFELKI: ikona statusu, ocena, postęp · ŁADOWANIE · POWIADOMIENIA · FOKUS · KURSOR
    ===================================================================== */
-/* ikona statusu na okładce: złoty medalion z ikoną w kolorze statusu (te same ikony co na telefonie),
-   pod łukiem po lewej; w trybie „Zaznacz wiele” w tym miejscu jest checkbox, więc medalion znika */
 :root {
   --ik-st-in-progress: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
   --ik-st-completed: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 12.5l4.5 4.5L19.5 6.5'/%3E%3C/svg%3E");
@@ -1960,8 +1833,7 @@ body.shinden-list .cell-tile-wrapper::after {
 }
 body.shinden-list .cell-tile-item:has(.cell-tile-bulkUpdate) .cell-tile-wrapper::before,
 body.shinden-list .cell-tile-item:has(.cell-tile-bulkUpdate) .cell-tile-wrapper::after { display: none; }
-/* podpis pod okładką (zawsze przy dolnej krawędzi, także przy jednolinijkowym tytule): postęp jako pastylka po lewej, Twoja ocena jako złoty medalion po prawej
-   (w ciemnym podpisie, nie na okładce — na jasnych okładkach byłaby nieczytelna) */
+
 body.shinden-list .cell-tile-info .cell-tile-epInfo { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: auto !important; }
 body.shinden-list .cell-tile-info .cell-tile-epInfo .cell-tile-episodes {
   display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px 1px; border-radius: 999px;
@@ -1978,7 +1850,7 @@ body.shinden-list .cell-tile-info .cell-tile-epInfo .cell-tile-rate {
 }
 body.shinden-list .cell-tile-info .cell-tile-epInfo .cell-tile-rate::before { content: "★" !important; font-size: 9px; color: var(--gold) !important; }
 
-/* kropki ładowania (lista, podgląd okładki): złote, migoczące jak gwiazdki — były fioletowe Shindena */
+/* kropki ładowania */
 body.shinden-list .loader-dots circle { fill: var(--gold) !important; transform-box: fill-box; transform-origin: center; animation: ladowanie-gwiazdka 1.2s ease-in-out infinite; filter: drop-shadow(0 0 4px var(--gold)); }
 body.shinden-list .loader-dots circle:nth-child(2) { animation-delay: .2s; }
 body.shinden-list .loader-dots circle:nth-child(3) { animation-delay: .4s; }
@@ -1987,8 +1859,7 @@ body.shinden-list .loader-dots circle:nth-child(3) { animation-delay: .4s; }
   body.shinden-list .loader-dots circle { animation: none; }
 }
 
-/* powiadomienie po zapisie (MUI Snackbar + Alert w .notification-wrapper): jak menu „•••” — złota linia i ramka,
-   ikona w kolorze rodzaju komunikatu (zapisano / błąd / ostrzeżenie / informacja) */
+/* powiadomienie po zapisie */
 body.shinden-list .notification-wrapper .MuiAlert-root {
   align-items: center;
   padding: 6px 16px !important;
@@ -2006,34 +1877,25 @@ body.shinden-list .notification-wrapper [class*="MuiAlert-"][class*="Warning"] .
 body.shinden-list .notification-wrapper .MuiAlert-action button { color: var(--muted) !important; }
 body.shinden-list .notification-wrapper .MuiAlert-action button:hover { color: var(--gold-light) !important; }
 
-/* fokus z klawiatury (Tab): jedna złota obwódka wszędzie; karta kafelka jest przycięta, więc obwódka idzie wokół kafelka */
+/* fokus z klawiatury */
 body.shinden-list :where(a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])):focus-visible { outline: 2px solid var(--gold-light) !important; outline-offset: 2px; }
 body.shinden-list .cell-tile-link:focus-visible { outline: none !important; }
 body.shinden-list .cell-tile-item:has(.cell-tile-link:focus-visible) { outline: 2px solid var(--gold-light); outline-offset: 4px; border-radius: 10px; }
-/* listy rozwijane (react-select): po kliknięciu fokus dostaje niewidoczne pole wpisywania (2 px szerokości) —
-   obwódka rysowała się jako mały prostokąt przy napisie; fokus widać po ramce całej kontrolki */
 body.shinden-list input[id^="react-select-"]:focus-visible { outline: none !important; }
 
-/* kursor w polach tekstowych (szukajka, notatka, pola liczbowe) — był domyślny, jasny */
+/* kursor */
 body.shinden-list :is(input, textarea) { caret-color: var(--gold-light); }
 
 /* =====================================================================
    EFEKTY: wejście strony, płatki róż, kursor-różdżka, pasek przewijania, menu
    ===================================================================== */
 
-/* ---------- wejście strony: panele wyłaniają się z mgły ----------
-   „backwards” — animacja trzyma tylko stan początkowy, potem oddaje kontrolę
-   zwykłym stylom (np. uniesieniu kafelka po najechaniu). */
+/* ---------- wejście strony ---------- */
 body.shinden-list .sidebar-wrapper { animation: start-z-lewej .8s cubic-bezier(.2, .8, .2, 1) .15s backwards; }
 body.shinden-list .view-content-wrapper { animation: start-z-dolu .8s cubic-bezier(.2, .8, .2, 1) .3s backwards; }
 body.shinden-list .hero-image-container::after { animation: postac-wejscie 1s cubic-bezier(.2, .8, .2, 1) .5s backwards; }
-/* kafelki pojawiają się po kolei (pierwsze 24, dalsze razem) */
-/* --wejscie: po 2,5 s od pokazania widoku kafelków spada do 0 (licznik na .tilesView-wrapper, który przetrwa
-   przebudowę listy) — Shinden po zaznaczeniu pozycji w „Zaznacz wiele” buduje wszystkie kafelki od nowa
-   i bez tego animacja wejścia odpalała się jeszcze raz, jakby lista się przeładowała */
-body.shinden-list .cell-tile-item { animation: kafel-wejscie calc(.6s * var(--wejscie)) cubic-bezier(.2, .8, .2, 1) calc(var(--k-delay, 1.1s) * var(--wejscie)) backwards; }
-body.shinden-list .tilesView-wrapper { animation: wejscie-koniec-3 0s linear 2.5s forwards; }
-@keyframes wejscie-koniec-3 { to { --wejscie: 0; } }
+
+body.shinden-list .cell-tile-item { animation: kafel-wejscie .6s cubic-bezier(.2, .8, .2, 1) var(--k-delay, 1.1s) backwards; }
 body.shinden-list .cell-tile-item:nth-child(1)  { --k-delay: .38s; }
 body.shinden-list .cell-tile-item:nth-child(2)  { --k-delay: .41s; }
 body.shinden-list .cell-tile-item:nth-child(3)  { --k-delay: .44s; }
@@ -2066,15 +1928,7 @@ body.shinden-list .cell-tile-item:nth-child(24) { --k-delay: 1.07s; }
   60%  { opacity: 1; filter: blur(0) brightness(1.2); }
 }
 
-/* ---------- płatki róż i iskry na banerze ----------
-   dwie osobne warstwy nad banerem (pod nickiem i postacią): płatki na .layout-wrapper::before, iskry na
-   .page-wrapper::after.
-   Płatki: jeden obraz SVG na cały baner (bez kafli, więc bez powtarzającego się wzoru), w którym KAŻDY płatek ma
-   własną animację SMIL: własną krętą drogę w dół (kilka wychyleń w różne strony), prędkość i moment startu, obraca się
-   i „przewraca” (spłaszcza w poziomie, jakby był widziany z boku). Trzy plany (dalsze małe i ciemniejsze, bliższe
-   większe i jaśniejsze), pięć kształtów. SMIL w tle CSS działa w Chrome, Edge i Firefoksie.
-   Iskry: dwie warstwy kafli przesuwane animacją CSS (jak wcześniej).
-   Obrazy generuje skrypt narzedzia/banery.py (platki-smil) */
+/* ---------- płatki róż i iskry na banerze ---------- */
 body.shinden-list .layout-wrapper::before,
 body.shinden-list .page-wrapper::after {
   content: "";
@@ -2088,26 +1942,19 @@ body.shinden-list .page-wrapper::after {
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 85%, transparent);
           mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 85%, transparent);
 }
-/* obie wersje obrazu płatków — wybór w konfiguracji na górze (--platki-wersja) */
-:root {
-  --platki-pelne: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='340' viewBox='0 0 1600 340' preserveAspectRatio='xMidYMid slice'%3E%3Cg opacity='0.46'%3E%3CanimateMotion dur='15.2s' begin='-9.9s' repeatCount='indefinite' path='M504 -40 Q534.9 30 511.2 65 Q487.6 100 515.1 135 Q542.6 170 526.1 205 Q509.5 240 533.4 275 Q557.2 310 548.9 345 T540.5 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='9.7s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.32 1;1 1' dur='2.8s' begin='-0.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(0.56) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.40'%3E%3CanimateMotion dur='14.4s' begin='-3.2s' repeatCount='indefinite' path='M943.7 -40 Q977.9 30 935 65 Q892.1 100 931 135 Q970 170 916.5 205 Q863 240 908.9 275 Q954.8 310 931.2 345 T907.7 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='7.4s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.30 1;1 1' dur='2.8s' begin='-1.5s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(0.65) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.53'%3E%3CanimateMotion dur='17.7s' begin='-16.4s' repeatCount='indefinite' path='M1265.7 -40 Q1304.6 65 1264.4 117.5 Q1224.3 170 1259.4 222.5 Q1294.5 275 1272.5 327.5 T1250.5 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='4.7s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.38 1;1 1' dur='2.3s' begin='-0.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C5-5 13-3 12 3C11 7 6 6 4 3C3 1 1 1 0 0z' transform='scale(0.63) translate(-7 -1)' fill='%23b0407a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.47'%3E%3CanimateMotion dur='14.3s' begin='-9.6s' repeatCount='indefinite' path='M781.5 -40 Q843.6 30 792.1 65 Q740.6 100 801.6 135 Q862.7 170 802.1 205 Q741.6 240 802.9 275 Q864.3 310 844.4 345 T824.6 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='8.4s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.32 1;1 1' dur='2.1s' begin='-1.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(0.52) translate(-7 -1)' fill='%23b0407a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.58'%3E%3CanimateMotion dur='19.7s' begin='-17.5s' repeatCount='indefinite' path='M708.7 -40 Q758.6 30 736.5 65 Q714.4 100 753.7 135 Q793 170 765.7 205 Q738.4 240 784.6 275 Q830.8 310 824.4 345 T818 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='5.0s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.23 1;1 1' dur='2.3s' begin='-0.3s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(0.56) translate(-7 -1)' fill='%23b0407a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.40'%3E%3CanimateMotion dur='18.4s' begin='-13.0s' repeatCount='indefinite' path='M683.3 -40 Q781.4 30 713.4 65 Q645.4 100 709.9 135 Q774.5 170 719 205 Q663.5 240 730.5 275 Q797.5 310 771.8 345 T746.2 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='4.9s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.33 1;1 1' dur='2.6s' begin='-0.8s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C5-5 13-3 12 3C11 7 6 6 4 3C3 1 1 1 0 0z' transform='scale(0.62) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.47'%3E%3CanimateMotion dur='20.9s' begin='-19.8s' repeatCount='indefinite' path='M170.8 -40 Q247.9 30 190.7 65 Q133.6 100 202.6 135 Q271.6 170 214.5 205 Q157.5 240 220.2 275 Q282.9 310 263.5 345 T244 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='5.1s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.28 1;1 1' dur='3.6s' begin='-0.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(0.60) translate(-7 -1)' fill='%239a3a6e'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.50'%3E%3CanimateMotion dur='14.8s' begin='-8.4s' repeatCount='indefinite' path='M969.2 -40 Q1034.5 65 1009.1 117.5 Q983.7 170 1040.5 222.5 Q1097.3 275 1088.7 327.5 T1080 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='4.7s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.44 1;1 1' dur='2.5s' begin='-1.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(0.66) translate(-7 -1)' fill='%23b0407a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.49'%3E%3CanimateMotion dur='15.2s' begin='-11.4s' repeatCount='indefinite' path='M483.9 -40 Q549.4 65 498.3 117.5 Q447.1 170 511.2 222.5 Q575.2 275 542.7 327.5 T510.1 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='9.9s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.36 1;1 1' dur='3.3s' begin='-0.9s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(0.59) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.53'%3E%3CanimateMotion dur='15.3s' begin='-11.8s' repeatCount='indefinite' path='M576.1 -40 Q640.4 30 596.4 65 Q552.4 100 611.6 135 Q670.7 170 623.2 205 Q575.7 240 629.5 275 Q683.3 310 669.8 345 T656.3 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='7.1s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.16 1;1 1' dur='2.2s' begin='-0.1s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(0.56) translate(-7 -1)' fill='%23b0407a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.60'%3E%3CanimateMotion dur='16.1s' begin='-11.1s' repeatCount='indefinite' path='M429.4 -40 Q518.4 30 444.8 65 Q371.2 100 435.5 135 Q499.7 170 441.3 205 Q382.9 240 444.3 275 Q505.7 310 477.8 345 T449.9 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='6.9s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.39 1;1 1' dur='2.8s' begin='-0.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(0.55) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.45'%3E%3CanimateMotion dur='21.3s' begin='-16.6s' repeatCount='indefinite' path='M1069.8 -40 Q1133.4 65 1076.6 117.5 Q1019.8 170 1078 222.5 Q1136.1 275 1116 327.5 T1095.8 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='8.3s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.19 1;1 1' dur='1.8s' begin='-0.3s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(0.74) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.58'%3E%3CanimateMotion dur='20.5s' begin='-3.0s' repeatCount='indefinite' path='M1480.2 -40 Q1551.7 30 1503.1 65 Q1454.5 100 1520.4 135 Q1586.3 170 1535.8 205 Q1485.4 240 1566.3 275 Q1647.3 310 1622 345 T1596.6 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='9.0s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.23 1;1 1' dur='1.9s' begin='-0.5s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(0.53) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.48'%3E%3CanimateMotion dur='18.7s' begin='-4.8s' repeatCount='indefinite' path='M364.1 -40 Q408.1 30 357.5 65 Q306.8 100 350.5 135 Q394.3 170 346 205 Q297.7 240 340 275 Q382.4 310 355 345 T327.7 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='9.2s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.33 1;1 1' dur='3.1s' begin='-2.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(0.72) translate(-7 -1)' fill='%239a3a6e'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.46'%3E%3CanimateMotion dur='15.1s' begin='-9.4s' repeatCount='indefinite' path='M211.7 -40 Q233.5 30 203.9 65 Q174.3 100 194.3 135 Q214.3 170 185.2 205 Q156.1 240 175.2 275 Q194.3 310 178.5 345 T162.8 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='6.7s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.30 1;1 1' dur='2.7s' begin='-1.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(0.69) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.37'%3E%3CanimateMotion dur='17.6s' begin='-9.4s' repeatCount='indefinite' path='M1123.8 -40 Q1196.4 30 1151.5 65 Q1106.6 100 1161.7 135 Q1216.7 170 1184.9 205 Q1153.1 240 1205.5 275 Q1258 310 1245.6 345 T1233.3 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='4.4s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.39 1;1 1' dur='2.9s' begin='-2.6s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(0.60) translate(-7 -1)' fill='%23b0407a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.53'%3E%3CanimateMotion dur='19.7s' begin='-13.0s' repeatCount='indefinite' path='M219.5 -40 Q259.5 30 239.2 65 Q218.8 100 256.9 135 Q295 170 276.6 205 Q258.2 240 297.1 275 Q336 310 327.2 345 T318.4 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='6.0s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.25 1;1 1' dur='1.8s' begin='-1.3s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(0.71) translate(-7 -1)' fill='%239a3a6e'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.42'%3E%3CanimateMotion dur='18.4s' begin='-8.1s' repeatCount='indefinite' path='M-7.3 -40 Q13.7 30 -5 65 Q-23.8 100 -2.6 135 Q18.6 170 -6.4 205 Q-31.4 240 -6.6 275 Q18.3 310 5.4 345 T-7.6 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='8.5s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.40 1;1 1' dur='3.2s' begin='-2.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(0.53) translate(-7 -1)' fill='%23b0407a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.37'%3E%3CanimateMotion dur='17.2s' begin='-9.3s' repeatCount='indefinite' path='M1549.3 -40 Q1591.3 30 1556.9 65 Q1522.5 100 1568.8 135 Q1615 170 1569.3 205 Q1523.6 240 1566.9 275 Q1610.2 310 1594.3 345 T1578.3 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='7.6s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.23 1;1 1' dur='1.9s' begin='-0.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C5-5 13-3 12 3C11 7 6 6 4 3C3 1 1 1 0 0z' transform='scale(0.73) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.40'%3E%3CanimateMotion dur='22.0s' begin='-9.2s' repeatCount='indefinite' path='M-20.6 -40 Q60.9 65 3.7 117.5 Q-53.4 170 9.7 222.5 Q72.7 275 52 327.5 T31.3 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='7.2s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.28 1;1 1' dur='1.9s' begin='-1.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C5-5 13-3 12 3C11 7 6 6 4 3C3 1 1 1 0 0z' transform='scale(0.54) translate(-7 -1)' fill='%239a3a6e'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.46'%3E%3CanimateMotion dur='20.4s' begin='-20.3s' repeatCount='indefinite' path='M414.5 -40 Q422.4 65 394.7 117.5 Q367 170 380.2 222.5 Q393.3 275 375.6 327.5 T357.8 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='9.8s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.21 1;1 1' dur='2.1s' begin='-0.5s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(0.66) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.39'%3E%3CanimateMotion dur='21.1s' begin='-15.3s' repeatCount='indefinite' path='M293.7 -40 Q355.1 65 343.6 117.5 Q332.1 170 371.7 222.5 Q411.2 275 411.5 327.5 T411.8 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='9.2s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.23 1;1 1' dur='2.9s' begin='-0.7s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(0.72) translate(-7 -1)' fill='%23b0407a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.43'%3E%3CanimateMotion dur='17.7s' begin='-2.8s' repeatCount='indefinite' path='M452.3 -40 Q503.6 30 453.8 65 Q403.9 100 443.8 135 Q483.7 170 437.2 205 Q390.7 240 435.8 275 Q480.9 310 460.3 345 T439.7 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='5.7s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.22 1;1 1' dur='2.8s' begin='-2.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(0.59) translate(-7 -1)' fill='%239a3a6e'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.55'%3E%3CanimateMotion dur='20.5s' begin='-3.0s' repeatCount='indefinite' path='M112.6 -40 Q160 30 116.3 65 Q72.5 100 121.6 135 Q170.8 170 119.7 205 Q68.7 240 123.6 275 Q178.6 310 151.1 345 T123.5 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='8.6s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.30 1;1 1' dur='3.0s' begin='-0.8s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(0.66) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.76'%3E%3CanimateMotion dur='10.9s' begin='-9.0s' repeatCount='indefinite' path='M999.4 -40 Q1068.7 30 1006.4 65 Q944.1 100 1003.3 135 Q1062.5 170 1012.8 205 Q963.1 240 1023.4 275 Q1083.7 310 1057.7 345 T1031.8 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='4.5s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.34 1;1 1' dur='1.5s' begin='-1.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(1.01) translate(-7 -1)' fill='%23c94481'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.77'%3E%3CanimateMotion dur='12.7s' begin='-0.6s' repeatCount='indefinite' path='M592.7 -40 Q622.5 65 608.6 117.5 Q594.8 170 619.2 222.5 Q643.6 275 636 327.5 T628.4 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='8.5s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.39 1;1 1' dur='2.4s' begin='-2.1s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(0.99) translate(-7 -1)' fill='%23d23c7d'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.59'%3E%3CanimateMotion dur='14.5s' begin='-3.4s' repeatCount='indefinite' path='M354.4 -40 Q400.7 30 348.9 65 Q297.2 100 355.6 135 Q413.9 170 371 205 Q328.1 240 379.5 275 Q430.9 310 404.1 345 T377.3 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='7.7s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.29 1;1 1' dur='1.7s' begin='-0.8s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C5-5 13-3 12 3C11 7 6 6 4 3C3 1 1 1 0 0z' transform='scale(0.85) translate(-7 -1)' fill='%23d23c7d'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.55'%3E%3CanimateMotion dur='10.6s' begin='-2.3s' repeatCount='indefinite' path='M1593.8 -40 Q1649.7 30 1610.7 65 Q1571.7 100 1618 135 Q1664.4 170 1624.4 205 Q1584.5 240 1636.6 275 Q1688.8 310 1675.1 345 T1661.4 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='8.9s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.28 1;1 1' dur='3.5s' begin='-0.9s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(1.04) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.67'%3E%3CanimateMotion dur='15.7s' begin='-3.3s' repeatCount='indefinite' path='M312.5 -40 Q368.4 30 314.2 65 Q260 100 306.8 135 Q353.6 170 296.3 205 Q239.1 240 291.4 275 Q343.7 310 310.9 345 T278 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='4.1s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.30 1;1 1' dur='1.4s' begin='-0.6s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(0.98) translate(-7 -1)' fill='%23c94481'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.73'%3E%3CanimateMotion dur='10.8s' begin='-3.7s' repeatCount='indefinite' path='M467.3 -40 Q523.3 65 501.4 117.5 Q479.4 170 524.9 222.5 Q570.3 275 564.4 327.5 T558.5 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='6.2s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.45 1;1 1' dur='2.3s' begin='-1.3s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C5-5 13-3 12 3C11 7 6 6 4 3C3 1 1 1 0 0z' transform='scale(1.03) translate(-7 -1)' fill='%23c94481'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.77'%3E%3CanimateMotion dur='12.6s' begin='-3.5s' repeatCount='indefinite' path='M566 -40 Q583.1 30 558.3 65 Q533.5 100 553.2 135 Q573 170 544.7 205 Q516.4 240 534 275 Q551.7 310 538 345 T524.3 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='8.3s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.37 1;1 1' dur='1.5s' begin='-0.7s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(0.99) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.79'%3E%3CanimateMotion dur='13.9s' begin='-4.0s' repeatCount='indefinite' path='M1224.5 -40 Q1270 65 1263.2 117.5 Q1256.3 170 1290.5 222.5 Q1324.7 275 1328 327.5 T1331.3 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='7.9s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.32 1;1 1' dur='2.1s' begin='-0.8s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C5-5 13-3 12 3C11 7 6 6 4 3C3 1 1 1 0 0z' transform='scale(0.86) translate(-7 -1)' fill='%23d23c7d'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.60'%3E%3CanimateMotion dur='11.0s' begin='-2.3s' repeatCount='indefinite' path='M241.1 -40 Q314 65 254.2 117.5 Q194.4 170 266.7 222.5 Q339 275 304.8 327.5 T270.6 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='6.1s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.22 1;1 1' dur='1.6s' begin='-0.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(0.91) translate(-7 -1)' fill='%23d23c7d'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.58'%3E%3CanimateMotion dur='15.3s' begin='-11.5s' repeatCount='indefinite' path='M917 -40 Q959.5 65 922.8 117.5 Q886.1 170 923.2 222.5 Q960.2 275 945.8 327.5 T931.5 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='4.6s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.27 1;1 1' dur='3.4s' begin='-2.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(0.87) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.76'%3E%3CanimateMotion dur='11.9s' begin='-9.7s' repeatCount='indefinite' path='M685.5 -40 Q757 30 672.9 65 Q588.9 100 662.6 135 Q736.3 170 661.8 205 Q587.4 240 647.3 275 Q707.3 310 677.9 345 T648.4 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='8.7s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.20 1;1 1' dur='1.9s' begin='-1.8s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(0.90) translate(-7 -1)' fill='%23d23c7d'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.71'%3E%3CanimateMotion dur='15.0s' begin='-10.5s' repeatCount='indefinite' path='M142.9 -40 Q233.9 65 189 117.5 Q144.2 170 218 222.5 Q291.8 275 267.9 327.5 T244 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='7.8s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.28 1;1 1' dur='2.6s' begin='-2.0s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C5-5 13-3 12 3C11 7 6 6 4 3C3 1 1 1 0 0z' transform='scale(0.86) translate(-7 -1)' fill='%23c94481'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.76'%3E%3CanimateMotion dur='11.8s' begin='-11.1s' repeatCount='indefinite' path='M127.1 -40 Q146.4 65 120 117.5 Q93.6 170 120.1 222.5 Q146.7 275 130.3 327.5 T114 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='7.2s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.16 1;1 1' dur='2.6s' begin='-1.1s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(1.04) translate(-7 -1)' fill='%23d23c7d'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.72'%3E%3CanimateMotion dur='10.3s' begin='-2.0s' repeatCount='indefinite' path='M1051.4 -40 Q1123.5 65 1065.8 117.5 Q1008.1 170 1091 222.5 Q1173.8 275 1140.9 327.5 T1107.9 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='8.1s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.39 1;1 1' dur='1.8s' begin='-1.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(0.86) translate(-7 -1)' fill='%23c94481'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.67'%3E%3CanimateMotion dur='11.2s' begin='-10.9s' repeatCount='indefinite' path='M808.2 -40 Q865.7 65 842.9 117.5 Q820 170 868.6 222.5 Q917.2 275 906.5 327.5 T895.8 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='6.9s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.17 1;1 1' dur='3.4s' begin='-2.0s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(0.83) translate(-7 -1)' fill='%23d23c7d'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.80'%3E%3CanimateMotion dur='10.3s' begin='-0.2s' repeatCount='indefinite' path='M1508.8 -40 Q1555.5 65 1511 117.5 Q1466.5 170 1521.4 222.5 Q1576.3 275 1550 327.5 T1523.6 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='5.1s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.31 1;1 1' dur='2.8s' begin='-1.3s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(0.88) translate(-7 -1)' fill='%23c94481'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.69'%3E%3CanimateMotion dur='14.4s' begin='-12.0s' repeatCount='indefinite' path='M483.9 -40 Q542.3 65 486.3 117.5 Q430.3 170 497.4 222.5 Q564.5 275 534 327.5 T503.5 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='6.1s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.40 1;1 1' dur='3.2s' begin='-1.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(1.04) translate(-7 -1)' fill='%23c94481'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.56'%3E%3CanimateMotion dur='12.8s' begin='-4.8s' repeatCount='indefinite' path='M42.8 -40 Q114.4 30 40.9 65 Q-32.6 100 34.9 135 Q102.4 170 34.5 205 Q-33.4 240 30.2 275 Q93.8 310 55.6 345 T17.5 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='5.5s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.42 1;1 1' dur='3.0s' begin='-1.0s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(0.90) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.75'%3E%3CanimateMotion dur='10.8s' begin='-6.7s' repeatCount='indefinite' path='M417.5 -40 Q469.8 30 440 65 Q410.3 100 449.8 135 Q489.3 170 458.8 205 Q428.2 240 471 275 Q513.8 310 500.1 345 T486.5 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='6.9s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.44 1;1 1' dur='3.5s' begin='-1.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(1.48) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.77'%3E%3CanimateMotion dur='8.7s' begin='-4.3s' repeatCount='indefinite' path='M381.8 -40 Q456.5 30 375.8 65 Q295.2 100 367.7 135 Q440.1 170 370.7 205 Q301.3 240 361.3 275 Q421.3 310 388 345 T354.7 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='8.5s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.17 1;1 1' dur='1.9s' begin='-0.1s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(1.28) translate(-7 -1)' fill='%23ff86b4'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.83'%3E%3CanimateMotion dur='8.3s' begin='-8.1s' repeatCount='indefinite' path='M888.4 -40 Q978 30 924.7 65 Q871.3 100 941 135 Q1010.6 170 947.7 205 Q884.9 240 976.4 275 Q1068 310 1037.1 345 T1006.2 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='8.5s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.35 1;1 1' dur='3.3s' begin='-0.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(1.21) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.79'%3E%3CanimateMotion dur='8.2s' begin='-4.6s' repeatCount='indefinite' path='M1372.7 -40 Q1429.1 65 1402.5 117.5 Q1375.9 170 1418.7 222.5 Q1461.5 275 1453.5 327.5 T1445.5 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='5.5s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.31 1;1 1' dur='1.9s' begin='-1.3s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(1.25) translate(-7 -1)' fill='%23ff86b4'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.76'%3E%3CanimateMotion dur='8.9s' begin='-0.3s' repeatCount='indefinite' path='M128.9 -40 Q177.3 65 165.6 117.5 Q153.9 170 186.3 222.5 Q218.7 275 223.2 327.5 T227.8 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='9.6s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.41 1;1 1' dur='2.2s' begin='-1.0s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(1.25) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.93'%3E%3CanimateMotion dur='10.1s' begin='-9.6s' repeatCount='indefinite' path='M396.7 -40 Q426.5 30 407.6 65 Q388.7 100 415 135 Q441.3 170 423.9 205 Q406.5 240 432.5 275 Q458.5 310 451.3 345 T444 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='6.5s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.34 1;1 1' dur='2.2s' begin='-0.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(1.36) translate(-7 -1)' fill='%23ff86b4'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.95'%3E%3CanimateMotion dur='9.0s' begin='-4.3s' repeatCount='indefinite' path='M12.9 -40 Q77.8 65 49.7 117.5 Q21.7 170 65.6 222.5 Q109.6 275 102.9 327.5 T96.1 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='9.7s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.32 1;1 1' dur='2.1s' begin='-0.7s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C5-5 13-3 12 3C11 7 6 6 4 3C3 1 1 1 0 0z' transform='scale(1.39) translate(-7 -1)' fill='%23f06aa3'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.84'%3E%3CanimateMotion dur='10.5s' begin='-10.4s' repeatCount='indefinite' path='M659.6 -40 Q688.7 30 655.4 65 Q622.2 100 658.1 135 Q694.1 170 650 205 Q605.9 240 645.1 275 Q684.4 310 659.7 345 T635.1 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='4.1s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.34 1;1 1' dur='2.6s' begin='-2.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(1.29) translate(-7 -1)' fill='%23f06aa3'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.81'%3E%3CanimateMotion dur='9.5s' begin='-3.5s' repeatCount='indefinite' path='M109.6 -40 Q142.4 30 101 65 Q59.7 100 94.3 135 Q128.9 170 86.2 205 Q43.5 240 88.5 275 Q133.5 310 104.7 345 T75.8 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='5.9s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.34 1;1 1' dur='2.7s' begin='-0.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(1.43) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.83'%3E%3CanimateMotion dur='9.8s' begin='-8.7s' repeatCount='indefinite' path='M1156.7 -40 Q1228.7 30 1185.8 65 Q1142.9 100 1199.6 135 Q1256.4 170 1210.4 205 Q1164.4 240 1220.3 275 Q1276.3 310 1263.6 345 T1250.9 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='5.5s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.42 1;1 1' dur='3.0s' begin='-0.1s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(1.48) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.82'%3E%3CanimateMotion dur='10.0s' begin='-0.4s' repeatCount='indefinite' path='M904.7 -40 Q963.4 30 893.8 65 Q824.2 100 883.5 135 Q942.8 170 880.3 205 Q817.8 240 878.2 275 Q938.6 310 902.3 345 T865.9 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='5.1s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.45 1;1 1' dur='1.4s' begin='-0.7s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(1.30) translate(-7 -1)' fill='%23ff86b4'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.76'%3E%3CanimateMotion dur='9.5s' begin='-7.8s' repeatCount='indefinite' path='M710.7 -40 Q776 30 731.8 65 Q687.6 100 751.2 135 Q814.9 170 766.1 205 Q717.4 240 780.6 275 Q843.9 310 820.2 345 T796.6 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='9.5s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.37 1;1 1' dur='2.1s' begin='-0.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(1.33) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.81'%3E%3CanimateMotion dur='10.6s' begin='-6.9s' repeatCount='indefinite' path='M1223.5 -40 Q1285.5 65 1206.7 117.5 Q1128 170 1190.1 222.5 Q1252.3 275 1210.2 327.5 T1168.1 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='4.4s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.38 1;1 1' dur='2.2s' begin='-0.3s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(1.22) translate(-7 -1)' fill='%23f06aa3'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  --platki-lekkie: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='340' viewBox='0 0 1600 340' preserveAspectRatio='xMidYMid slice'%3E%3Cg opacity='0.46'%3E%3CanimateMotion dur='15.2s' begin='-9.9s' repeatCount='indefinite' path='M504 -40 Q534.9 30 511.2 65 Q487.6 100 515.1 135 Q542.6 170 526.1 205 Q509.5 240 533.4 275 Q557.2 310 548.9 345 T540.5 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='9.7s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.32 1;1 1' dur='2.8s' begin='-0.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(0.56) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.40'%3E%3CanimateMotion dur='14.4s' begin='-3.2s' repeatCount='indefinite' path='M943.7 -40 Q977.9 30 935 65 Q892.1 100 931 135 Q970 170 916.5 205 Q863 240 908.9 275 Q954.8 310 931.2 345 T907.7 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='7.4s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.30 1;1 1' dur='2.8s' begin='-1.5s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(0.65) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.53'%3E%3CanimateMotion dur='17.7s' begin='-16.4s' repeatCount='indefinite' path='M1265.7 -40 Q1304.6 65 1264.4 117.5 Q1224.3 170 1259.4 222.5 Q1294.5 275 1272.5 327.5 T1250.5 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='4.7s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.38 1;1 1' dur='2.3s' begin='-0.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C5-5 13-3 12 3C11 7 6 6 4 3C3 1 1 1 0 0z' transform='scale(0.63) translate(-7 -1)' fill='%23b0407a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.47'%3E%3CanimateMotion dur='14.3s' begin='-9.6s' repeatCount='indefinite' path='M781.5 -40 Q843.6 30 792.1 65 Q740.6 100 801.6 135 Q862.7 170 802.1 205 Q741.6 240 802.9 275 Q864.3 310 844.4 345 T824.6 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='8.4s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.32 1;1 1' dur='2.1s' begin='-1.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(0.52) translate(-7 -1)' fill='%23b0407a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.58'%3E%3CanimateMotion dur='19.7s' begin='-17.5s' repeatCount='indefinite' path='M708.7 -40 Q758.6 30 736.5 65 Q714.4 100 753.7 135 Q793 170 765.7 205 Q738.4 240 784.6 275 Q830.8 310 824.4 345 T818 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='5.0s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.23 1;1 1' dur='2.3s' begin='-0.3s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(0.56) translate(-7 -1)' fill='%23b0407a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.40'%3E%3CanimateMotion dur='18.4s' begin='-13.0s' repeatCount='indefinite' path='M683.3 -40 Q781.4 30 713.4 65 Q645.4 100 709.9 135 Q774.5 170 719 205 Q663.5 240 730.5 275 Q797.5 310 771.8 345 T746.2 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='4.9s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.33 1;1 1' dur='2.6s' begin='-0.8s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C5-5 13-3 12 3C11 7 6 6 4 3C3 1 1 1 0 0z' transform='scale(0.62) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.47'%3E%3CanimateMotion dur='20.9s' begin='-19.8s' repeatCount='indefinite' path='M170.8 -40 Q247.9 30 190.7 65 Q133.6 100 202.6 135 Q271.6 170 214.5 205 Q157.5 240 220.2 275 Q282.9 310 263.5 345 T244 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='5.1s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.28 1;1 1' dur='3.6s' begin='-0.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(0.60) translate(-7 -1)' fill='%239a3a6e'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.50'%3E%3CanimateMotion dur='14.8s' begin='-8.4s' repeatCount='indefinite' path='M969.2 -40 Q1034.5 65 1009.1 117.5 Q983.7 170 1040.5 222.5 Q1097.3 275 1088.7 327.5 T1080 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='4.7s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.44 1;1 1' dur='2.5s' begin='-1.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(0.66) translate(-7 -1)' fill='%23b0407a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.49'%3E%3CanimateMotion dur='15.2s' begin='-11.4s' repeatCount='indefinite' path='M483.9 -40 Q549.4 65 498.3 117.5 Q447.1 170 511.2 222.5 Q575.2 275 542.7 327.5 T510.1 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='9.9s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.36 1;1 1' dur='3.3s' begin='-0.9s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(0.59) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.53'%3E%3CanimateMotion dur='15.3s' begin='-11.8s' repeatCount='indefinite' path='M576.1 -40 Q640.4 30 596.4 65 Q552.4 100 611.6 135 Q670.7 170 623.2 205 Q575.7 240 629.5 275 Q683.3 310 669.8 345 T656.3 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='7.1s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.16 1;1 1' dur='2.2s' begin='-0.1s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(0.56) translate(-7 -1)' fill='%23b0407a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.60'%3E%3CanimateMotion dur='16.1s' begin='-11.1s' repeatCount='indefinite' path='M429.4 -40 Q518.4 30 444.8 65 Q371.2 100 435.5 135 Q499.7 170 441.3 205 Q382.9 240 444.3 275 Q505.7 310 477.8 345 T449.9 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='6.9s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.39 1;1 1' dur='2.8s' begin='-0.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(0.55) translate(-7 -1)' fill='%23c4508a'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.65'%3E%3CanimateMotion dur='15.5s' begin='-12.1s' repeatCount='indefinite' path='M1069.8 -40 Q1133.4 65 1076.6 117.5 Q1019.8 170 1078 222.5 Q1136.1 275 1116 327.5 T1095.8 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='8.3s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.19 1;1 1' dur='1.8s' begin='-0.3s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(1.04) translate(-7 -1)' fill='%23d23c7d'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.78'%3E%3CanimateMotion dur='14.8s' begin='-2.2s' repeatCount='indefinite' path='M1480.2 -40 Q1551.7 30 1503.1 65 Q1454.5 100 1520.4 135 Q1586.3 170 1535.8 205 Q1485.4 240 1566.3 275 Q1647.3 310 1622 345 T1596.6 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='9.0s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.23 1;1 1' dur='1.9s' begin='-0.5s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(0.83) translate(-7 -1)' fill='%23d23c7d'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.68'%3E%3CanimateMotion dur='13.5s' begin='-3.5s' repeatCount='indefinite' path='M364.1 -40 Q408.1 30 357.5 65 Q306.8 100 350.5 135 Q394.3 170 346 205 Q297.7 240 340 275 Q382.4 310 355 345 T327.7 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='9.2s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.33 1;1 1' dur='3.1s' begin='-2.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(1.02) translate(-7 -1)' fill='%23c94481'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.66'%3E%3CanimateMotion dur='10.8s' begin='-6.7s' repeatCount='indefinite' path='M211.7 -40 Q233.5 30 203.9 65 Q174.3 100 194.3 135 Q214.3 170 185.2 205 Q156.1 240 175.2 275 Q194.3 310 178.5 345 T162.8 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='6.7s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.30 1;1 1' dur='2.7s' begin='-1.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(0.99) translate(-7 -1)' fill='%23d23c7d'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.57'%3E%3CanimateMotion dur='12.7s' begin='-6.8s' repeatCount='indefinite' path='M1123.8 -40 Q1196.4 30 1151.5 65 Q1106.6 100 1161.7 135 Q1216.7 170 1184.9 205 Q1153.1 240 1205.5 275 Q1258 310 1245.6 345 T1233.3 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='4.4s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.39 1;1 1' dur='2.9s' begin='-2.6s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(0.90) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.73'%3E%3CanimateMotion dur='14.3s' begin='-9.4s' repeatCount='indefinite' path='M219.5 -40 Q259.5 30 239.2 65 Q218.8 100 256.9 135 Q295 170 276.6 205 Q258.2 240 297.1 275 Q336 310 327.2 345 T318.4 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='6.0s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.25 1;1 1' dur='1.8s' begin='-1.3s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(1.01) translate(-7 -1)' fill='%23c94481'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.62'%3E%3CanimateMotion dur='13.3s' begin='-5.9s' repeatCount='indefinite' path='M-7.3 -40 Q13.7 30 -5 65 Q-23.8 100 -2.6 135 Q18.6 170 -6.4 205 Q-31.4 240 -6.6 275 Q18.3 310 5.4 345 T-7.6 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='8.5s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.40 1;1 1' dur='3.2s' begin='-2.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C3-7 15-6 16 0C15 5 4 6 0 0z' transform='scale(0.83) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.57'%3E%3CanimateMotion dur='12.4s' begin='-6.7s' repeatCount='indefinite' path='M1549.3 -40 Q1591.3 30 1556.9 65 Q1522.5 100 1568.8 135 Q1615 170 1569.3 205 Q1523.6 240 1566.9 275 Q1610.2 310 1594.3 345 T1578.3 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='7.6s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.23 1;1 1' dur='1.9s' begin='-0.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C5-5 13-3 12 3C11 7 6 6 4 3C3 1 1 1 0 0z' transform='scale(1.03) translate(-7 -1)' fill='%23d23c7d'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.79'%3E%3CanimateMotion dur='11.0s' begin='-4.6s' repeatCount='indefinite' path='M-20.6 -40 Q60.9 65 3.7 117.5 Q-53.4 170 9.7 222.5 Q72.7 275 52 327.5 T31.3 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='7.2s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.28 1;1 1' dur='1.9s' begin='-1.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C5-5 13-3 12 3C11 7 6 6 4 3C3 1 1 1 0 0z' transform='scale(1.21) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.84'%3E%3CanimateMotion dur='10.2s' begin='-10.2s' repeatCount='indefinite' path='M414.5 -40 Q422.4 65 394.7 117.5 Q367 170 380.2 222.5 Q393.3 275 375.6 327.5 T357.8 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='9.8s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.21 1;1 1' dur='2.1s' begin='-0.5s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C1-6 9-8 11-2C13 4 7 9 2 7C-1 5-1 2 0 0z' transform='scale(1.38) translate(-7 -1)' fill='%23ff86b4'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.78'%3E%3CanimateMotion dur='10.5s' begin='-7.7s' repeatCount='indefinite' path='M293.7 -40 Q355.1 65 343.6 117.5 Q332.1 170 371.7 222.5 Q411.2 275 411.5 327.5 T411.8 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='9.2s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.23 1;1 1' dur='2.9s' begin='-0.7s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(1.46) translate(-7 -1)' fill='%23f06aa3'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.82'%3E%3CanimateMotion dur='8.8s' begin='-1.4s' repeatCount='indefinite' path='M452.3 -40 Q503.6 30 453.8 65 Q403.9 100 443.8 135 Q483.7 170 437.2 205 Q390.7 240 435.8 275 Q480.9 310 460.3 345 T439.7 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='5.7s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.22 1;1 1' dur='2.8s' begin='-2.2s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-6 12-6 12 1C12 7 5 9 0 0z' transform='scale(1.27) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.91'%3E%3CanimateMotion dur='10.3s' begin='-1.5s' repeatCount='indefinite' path='M112.6 -40 Q160 30 116.3 65 Q72.5 100 121.6 135 Q170.8 170 119.7 205 Q68.7 240 123.6 275 Q178.6 310 151.1 345 T123.5 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='8.6s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.30 1;1 1' dur='3.0s' begin='-0.8s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(1.38) translate(-7 -1)' fill='%23ff86b4'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg opacity='0.92'%3E%3CanimateMotion dur='7.6s' begin='-6.3s' repeatCount='indefinite' path='M999.4 -40 Q1068.7 30 1006.4 65 Q944.1 100 1003.3 135 Q1062.5 170 1012.8 205 Q963.1 240 1023.4 275 Q1083.7 310 1057.7 345 T1031.8 380'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='-360' dur='4.5s' repeatCount='indefinite'/%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1;0.34 1;1 1' dur='1.5s' begin='-1.4s' repeatCount='indefinite'/%3E%3Cpath d='M0 0C4-2 12-2 14 0C12 2 4 2 0 0z' transform='scale(1.44) translate(-7 -1)' fill='%23e8458b'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-}
+
 body.shinden-list .layout-wrapper::before {
   background: var(--platki-wersja) center / cover no-repeat;
 }
-/* iskry: drobne wznoszą się, rzadkie wznoszą się i płyną w bok */
 body.shinden-list .page-wrapper::after {
   background:
-    /* iskry drobne */
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='370' height='290'%3E%3Ccircle cx='251' cy='30' r='0.8' fill='%23e9d4ff' opacity='0.88'/%3E%3Ccircle cx='228' cy='241' r='1.0' fill='%23e9d4ff' opacity='0.57'/%3E%3Ccircle cx='306' cy='149' r='1.3' fill='%23e9d4ff' opacity='0.60'/%3E%3Ccircle cx='232' cy='108' r='1.1' fill='%23f3d9a0' opacity='0.61'/%3E%3Ccircle cx='195' cy='34' r='0.7' fill='%23f3d9a0' opacity='0.84'/%3E%3Ccircle cx='251' cy='173' r='1.3' fill='%23e9d4ff' opacity='0.67'/%3E%3Ccircle cx='106' cy='111' r='0.6' fill='%23e9d4ff' opacity='0.72'/%3E%3Ccircle cx='270' cy='129' r='1.0' fill='%23e9d4ff' opacity='0.74'/%3E%3Ccircle cx='351' cy='278' r='1.0' fill='%23e9d4ff' opacity='0.58'/%3E%3Ccircle cx='307' cy='30' r='0.8' fill='%23e9d4ff' opacity='0.51'/%3E%3Ccircle cx='31' cy='85' r='0.6' fill='%23f3d9a0' opacity='0.59'/%3E%3Ccircle cx='135' cy='203' r='0.9' fill='%23f3d9a0' opacity='0.49'/%3E%3Ccircle cx='16' cy='153' r='1.1' fill='%23e9d4ff' opacity='0.52'/%3E%3Ccircle cx='7' cy='189' r='0.9' fill='%23e9d4ff' opacity='0.52'/%3E%3Ccircle cx='131' cy='49' r='0.8' fill='%23e9d4ff' opacity='0.83'/%3E%3Ccircle cx='316' cy='209' r='0.7' fill='%23f3d9a0' opacity='0.81'/%3E%3Ccircle cx='329' cy='65' r='0.8' fill='%23e9d4ff' opacity='0.49'/%3E%3Ccircle cx='189' cy='262' r='1.3' fill='%23e9d4ff' opacity='0.70'/%3E%3Ccircle cx='81' cy='178' r='1.3' fill='%23e9d4ff' opacity='0.60'/%3E%3Ccircle cx='15' cy='286' r='1.1' fill='%23f3d9a0' opacity='0.48'/%3E%3Ccircle cx='27' cy='48' r='1.0' fill='%23e9d4ff' opacity='0.55'/%3E%3Ccircle cx='187' cy='73' r='0.8' fill='%23f3d9a0' opacity='0.71'/%3E%3Ccircle cx='196' cy='138' r='0.9' fill='%23e9d4ff' opacity='0.81'/%3E%3Ccircle cx='354' cy='17' r='1.3' fill='%23f3d9a0' opacity='0.71'/%3E%3Ccircle cx='130' cy='159' r='0.9' fill='%23f3d9a0' opacity='0.80'/%3E%3Ccircle cx='75' cy='277' r='0.7' fill='%23e9d4ff' opacity='0.52'/%3E%3C/svg%3E") 0 0 / 370px 290px,
-    /* iskry rzadkie */
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='610' height='470'%3E%3Ccircle cx='233' cy='111' r='1.5' fill='%23f3d9a0' opacity='0.58'/%3E%3Ccircle cx='104' cy='426' r='1.6' fill='%23e9d4ff' opacity='0.82'/%3E%3Ccircle cx='352' cy='323' r='1.5' fill='%23e9d4ff' opacity='0.94'/%3E%3Ccircle cx='337' cy='181' r='1.6' fill='%23f3d9a0' opacity='0.79'/%3E%3Ccircle cx='444' cy='270' r='1.6' fill='%23f3d9a0' opacity='0.77'/%3E%3Ccircle cx='509' cy='207' r='1.1' fill='%23e9d4ff' opacity='0.60'/%3E%3Ccircle cx='97' cy='73' r='1.3' fill='%23f3d9a0' opacity='0.81'/%3E%3Ccircle cx='439' cy='81' r='1.3' fill='%23f3d9a0' opacity='0.54'/%3E%3Ccircle cx='40' cy='366' r='1.5' fill='%23e9d4ff' opacity='0.92'/%3E%3Ccircle cx='419' cy='457' r='1.2' fill='%23f3d9a0' opacity='0.90'/%3E%3Ccircle cx='36' cy='151' r='1.3' fill='%23f3d9a0' opacity='0.85'/%3E%3Ccircle cx='249' cy='310' r='1.2' fill='%23f3d9a0' opacity='0.83'/%3E%3Ccircle cx='17' cy='66' r='1.2' fill='%23e9d4ff' opacity='0.60'/%3E%3Ccircle cx='329' cy='411' r='1.2' fill='%23f3d9a0' opacity='0.80'/%3E%3C/svg%3E") 0 0 / 610px 470px;
   animation: iskry 28s linear infinite;
 }
 @keyframes iskry { to { background-position: 0 -580px, 610px -470px; } }
 
-/* ---------- kursor: różdżka z gwiazdką ---------- */
+/* ---------- kursor ---------- */
 body.shinden-list,
 body.shinden-list * {
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cpath d='M10 10L25 25' stroke='%231b1028' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M10 10L25 25' stroke='%23d9b56c' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M6 0.5L7.6 4.4 11.5 6 7.6 7.6 6 11.5 4.4 7.6 0.5 6 4.4 4.4z' fill='%23f3d27a' stroke='%231b1028' stroke-width='.8'/%3E%3Ccircle cx='6' cy='6' r='1.3' fill='%23fff'/%3E%3C/svg%3E") 6 6, auto;
@@ -2117,9 +1964,7 @@ body.shinden-list :is(a, a *, button, button *, label, select, [role="button"], 
 }
 body.shinden-list :is(input[type="text"], input:not([type]), textarea) { cursor: text; }
 
-/* ---------- pasek przewijania (Chrome, Edge, Opera, Safari) ----------
-   scrollbar-color z rdzenia wyłącza ::-webkit-scrollbar, więc tu go zerujemy;
-   Firefox nie zna ::-webkit-scrollbar i zostaje przy scrollbar-color z rdzenia */
+/* ---------- pasek przewijania ---------- */
 @supports selector(::-webkit-scrollbar) {
   html:root { scrollbar-color: auto; }
   ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -2133,9 +1978,7 @@ body.shinden-list :is(input[type="text"], input:not([type]), textarea) { cursor:
   ::-webkit-scrollbar-corner { background: #0c0814; }
 }
 
-/* ---------- menu „•••” i rozwijane listy: zwój zaklęć ---------- */
-/* wygląda jak małe okno: złote narożniki, złota linia u góry, ramka i poświata —
-   sama ciemna plama z białym tekstem wyglądała jak menu bez stylu */
+/* ---------- menu „•••” i rozwijane listy ---------- */
 body.shinden-list .MuiPopover-root:has(.dropdown-list) {
   filter: drop-shadow(0 0 14px rgba(var(--accent-rgb), .45));
 }
@@ -2154,10 +1997,9 @@ body.shinden-list .dropdown-list {
   margin: 0;
   padding: 4px 0 10px !important;
   min-width: 210px;
-  background: transparent !important;   /* Shinden daje tu szare #2f2f2f, które zakrywało całe tło menu */
+  background: transparent !important;
   animation: menu-wejscie .25s ease-out;
 }
-/* nagłówek na środku (narożniki zajmują rogi) z kreską, która wygasa ku brzegom */
 body.shinden-list .dropdown-list::before {
   content: "✦ OPCJE ✦";
   display: block;
@@ -2173,7 +2015,6 @@ body.shinden-list .dropdown-list::before {
   background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb), .55), transparent) center bottom / 100% 1px no-repeat;
 }
 body.shinden-list .dropdown-list li { margin: 0 6px; }
-/* cienka kreska między pozycjami */
 body.shinden-list .dropdown-list li + li { background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb), .14), transparent) center top / 100% 1px no-repeat; }
 body.shinden-list .dropdown-list .list-button {
   position: relative;
@@ -2208,9 +2049,9 @@ body.shinden-list .dropdown-list .list-button:focus-visible {
 }
 body.shinden-list .dropdown-list .list-button:hover::before,
 body.shinden-list .dropdown-list .list-button:focus-visible::before { color: var(--gold-light); opacity: 1; transform: rotate(45deg) scale(1.25); }
-/* rozwijane listy (sortowanie, filtry, tagi) */
+
 body.shinden-list :is(.custom-dropdown, .custom-async-dropdown) [class$="-menu"] {
-  z-index: 30 !important;   /* nad dalszymi polami panelu */
+  z-index: 30 !important;
   margin-top: 4px !important;
   border-radius: 8px !important;
   border: 0 !important;
@@ -2243,17 +2084,9 @@ body.shinden-list :is(.custom-dropdown, .custom-async-dropdown) [id*="-option-"]
 }
 
 /* =====================================================================
-   PRAWA KOLUMNA (szerokie ekrany): aksamitna chorągiew + podgląd okładki
-   środek prawej kolumny = 75% + 325px (strona Shindena ma 1300px szerokości), ale najwyżej 150px od prawej krawędzi
-   listy (50% + 650px) — na monitorach 2K kolumna jest szeroka i chorągiew/szyld z podglądem odjeżdżały daleko od listy
+   PRAWA KOLUMNA (szerokie ekrany)
    ===================================================================== */
-
-/* ---------- podgląd okładki: na ≥1800px w prawej kolumnie zamiast nad panelem bocznym ---------- */
-/* podgląd okładki siedzi w liście (z-index 2), a pasek nawigacji z nickiem na banerze ma 4 — przy stronie przewiniętej
-   do góry wierzch okienka (wyśrodkowanego w pionie) wchodził pod nick; na czas podglądu pasek schodzi pod listę */
-body.shinden-list:has(.rowTitleInfo-wrapper.is-visible) .navigation-wrapper { z-index: 2 !important; }   /* 2 jak lista, ale wcześniej w kodzie (lista nad nim); nad dużą postacią z boku (z-index 1) */
-/* okienko jest wyśrodkowane w pionie (Shinden: fixed, top/bottom 0) — wyśrodkowujemy je w obszarze pod paskiem nawigacji (49px),
-   żeby przy niskim oknie wierzch nie wchodził na pasek */
+body.shinden-list:has(.rowTitleInfo-wrapper.is-visible) .navigation-wrapper { z-index: 2 !important; }
 body.shinden-list .rowTitleInfo-wrapper { top: 50px !important; }
 @media (min-width: 1800px) {
   body.shinden-list .rowTitleInfo-wrapper { left: calc(min(75% + 325px, 50% + 800px) - 118px) !important; }
@@ -2264,9 +2097,7 @@ body.shinden-list .rowTitleInfo-wrapper { top: 50px !important; }
   to   { opacity: 1; transform: none; }
 }
 
-/* ---------- pionowa chorągiew ----------
-   jak chorągwie na murze z banera: aksamit, złote obszycie, wcięcie u dołu,
-   złoty drążek u góry; lekko kołysze się na wietrze. Napis zależy od rodzaju listy */
+/* ---------- pionowa chorągiew ---------- */
 body.shinden-list       { --choragiew: var(--choragiew-anime); }
 body.shinden-list.manga { --choragiew: var(--choragiew-manga); }
 body.shinden-list.novel { --choragiew: var(--choragiew-novel); }
@@ -2282,8 +2113,6 @@ body.shinden-list .layout-wrapper::after {
   text-orientation: upright;
   padding: 30px 18px 58px;
   font-family: "Shippori Mincho", serif !important;
-  /* nowrap: przy niskim oknie (fixed + top: 50%) brakowało wysokości i ostatni znak przeskakiwał
-     do drugiej kolumny, poza materiał; litery maleją, gdy okno jest bardzo niskie */
   white-space: nowrap;
   font-size: min(40px, calc((100vh - 208px) / 8));
   font-weight: 700;
@@ -2314,10 +2143,8 @@ body.shinden-list .layout-wrapper::after {
 }
 
 /* =====================================================================
-   OKNO „ZAAWANSOWANY WYBÓR TAGÓW” (przycisk „•••” obok pola Tag…) i inne okna Shindena
+   OKNO „ZAAWANSOWANY WYBÓR TAGÓW” i inne okna Shindena
    ===================================================================== */
-/* okno siedzi w treści strony (z-index 2) — gdy jest otwarte, cała treść idzie
-   nad baner, postać i nawigację, inaczej przykrywałyby jego górę */
 body.shinden-list .content-wrapper:has(.modal-wrapper) { z-index: 1000; }
 body.shinden-list .modal-wrapper {
   background:
@@ -2363,7 +2190,6 @@ body.shinden-list .modal-header h4::before {
   letter-spacing: .2em;
   color: var(--gold);
 }
-/* etykieta „TAGI” tylko w oknie tagów — pozostałe okna (odcinki, ocena, status, notatka, listy) jej nie mają */
 body.shinden-list .modal-inner:not(:has(.advanced-tags-wrapper)) .modal-header h4::before { display: none; }
 body.shinden-list .modal-header h4::after {
   content: "✦";
@@ -2384,8 +2210,6 @@ body.shinden-list .modal-content {
 }
 body.shinden-list .modal-wrapper > .modal-inner:not(.modal-size--xl) .modal-content { padding: 16px 20px !important; }
 
-/* okna edycji pozycji (menu „•••”, widoczne po zalogowaniu): nagłówki sekcji
-   („Zakres odcinków”, „Status”, „Moje oceny”…) — złote kapitaliki z linią zamiast szarego podkreślenia */
 body.shinden-list .modal-content .title-wrapper { display: flex; align-items: center; gap: 10px; margin: 14px 0 8px; }
 body.shinden-list .modal-content .title-wrapper:first-child { margin-top: 0; }
 body.shinden-list .modal-content .title-wrapper::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line), transparent); }
@@ -2401,7 +2225,7 @@ body.shinden-list .modal-content .title-wrapper :is(h4, h5) {
   border: 0 !important;
   color: var(--gold) !important;
 }
-/* „Zaawansowane ustawienia” w oknie odcinków */
+
 body.shinden-list .modal-episodes-button {
   padding: 4px 0 !important;
   font-family: var(--font-label) !important;
@@ -2417,7 +2241,7 @@ body.shinden-list .modal-episodes-button {
 }
 body.shinden-list .modal-episodes-button::before { content: "✦ "; color: var(--gold); }
 body.shinden-list .modal-episodes-button:hover { color: var(--gold-light) !important; text-shadow: 0 0 10px rgba(var(--accent-rgb), .7); }
-/* notatka: pole tekstowe jak pozostałe pola (było białe) */
+
 body.shinden-list .textarea {
   width: 100%;
   min-height: 96px;
@@ -2433,8 +2257,6 @@ body.shinden-list .textarea {
   transition: border-color .2s, box-shadow .2s;
 }
 body.shinden-list .textarea::placeholder { color: var(--muted); }
-/* ramka wyraźniejsza (sama linia --line ginęła w oknie), hover i aktywne pole złote jak wyszukiwarka;
-   color-scheme: dark — ciemny uchwyt zmiany rozmiaru i pasek przewijania zamiast jasnych systemowych */
 body.shinden-list .textarea {
   border-color: rgba(var(--gold-rgb), .32) !important;
   box-shadow: inset 0 0 14px rgba(var(--accent-rgb), .08);
@@ -2447,7 +2269,7 @@ body.shinden-list .textarea:focus {
   border-color: rgba(var(--gold-rgb), .8) !important;
   box-shadow: 0 0 10px rgba(var(--gold-rgb), .22), inset 0 0 14px rgba(var(--accent-rgb), .14);
 }
-/* ocena: gwiazdki MUI — puste były czarne (niewidoczne na ciemnym tle), pełne w fiolecie Shindena */
+
 body.shinden-list .MuiRating-icon { transition: color .15s, filter .15s, transform .15s; }
 body.shinden-list .MuiRating-iconEmpty { color: rgba(var(--gold-rgb), .28) !important; }
 body.shinden-list .MuiRating-iconFilled { color: var(--gold) !important; filter: drop-shadow(0 0 4px rgba(var(--gold-rgb), .55)); }
@@ -2455,8 +2277,7 @@ body.shinden-list .MuiRating-iconHover { color: var(--gold-light) !important; fi
 body.shinden-list .MuiRating-root.Mui-focusVisible .MuiRating-iconActive,
 body.shinden-list .MuiRating-iconActive { transform: scale(1.2); }
 body.shinden-list .modal-ratio-label { color: var(--text) !important; }
-/* nagłówek okna edycji („Anime:” + tytuł) i drobne teksty (Od/Do, opcje radio, skala, link do list) —
-   Shinden daje im własny szary #eceaec */
+
 body.shinden-list .title-edit-modal-header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; margin: 0 0 14px !important; }
 body.shinden-list .title-edit-modal-type { font-family: var(--font-label) !important; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted) !important; }
 body.shinden-list .title-edit-modal-link { font-family: var(--font-title) !important; color: var(--heading) !important; text-decoration: none !important; transition: color .2s, text-shadow .2s; }
@@ -2464,8 +2285,7 @@ body.shinden-list .title-edit-modal-link:hover { color: var(--accent-light) !imp
 body.shinden-list :is(.modal-episodes-range-text, .modal-episodes-range-input, .radio-label span, .modal-status-scale) { color: var(--text) !important; }
 body.shinden-list :is(.customListManageLink-link, .customListManageLink-text) { color: var(--accent-light) !important; text-decoration: none !important; }
 body.shinden-list .customListManageLink-link:hover .customListManageLink-text { color: var(--gold-light) !important; }
-/* listy własne w panelu bocznym — Shinden: aktywna #2f2f2f z szarą ramką i rogami 20/0, najechanie #b91ffd;
-   tu jak pozycje list wyżej (Oglądam, Obejrzane…) */
+
 body.shinden-list .sidebar-customList-list { display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px !important; }
 body.shinden-list .sidebar-customList-link {
   gap: 10px;
@@ -2483,21 +2303,19 @@ body.shinden-list .sidebar-customList-link.active {
   border-left: 3px solid var(--accent) !important;
 }
 body.shinden-list .sidebar-customList-link.active .sidebar-customList-count { color: var(--accent) !important; }
-/* nazwa do 100 znaków: najwyżej 3 linie */
+
 body.shinden-list .sidebar-customList-name {
   min-width: 0; padding-right: 0 !important; overflow-wrap: anywhere;
   display: -webkit-box !important; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
 }
 body.shinden-list .sidebar-customList-count { flex: none; padding: 1px 0 0 !important; font-family: var(--font-label) !important; color: var(--muted) !important; }
-/* ustawienia → listy własne (klasa body „custom-list-management”, bez „s” — inaczej niż w adresie): wiersze tabeli mają stałą wysokość (lista wirtualna, 33 px), a długa nazwa i adres
-   (do 100 znaków) wychodziły na sąsiednie wiersze — jedna linia z wielokropkiem */
+
 body.shinden-list.custom-list-management .listRowDesktop-item-value,
 body.shinden-list.custom-list-management :is(.cellLink-wrapper, .cellDefault-wrapper) { min-width: 0; max-width: 100%; }
 body.shinden-list.custom-list-management .listRowDesktop-item :is(.cellLink-value, .cellDefault-value) {
   display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 
-/* zakładki: rząd przycisków nad listą, lista przewija się pod nimi */
 body.shinden-list .advanced-tags-wrapper {
   height: 100%;
   max-height: none !important;
@@ -2544,7 +2362,6 @@ body.shinden-list .advanced-tags-wrapper .tab-content {
   scrollbar-width: thin;
 }
 
-/* tagi: siatka kafelków z ramką, zaznaczony = podświetlony */
 body.shinden-list .advanced-tags-list {
   display: grid !important;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
@@ -2579,7 +2396,6 @@ body.shinden-list .advanced-tag-item .checkbox-label.checked {
 body.shinden-list .advanced-tag-item .checkbox-label.checked::before { background: rgba(var(--accent-rgb), .25) !important; box-shadow: 0 0 6px var(--accent); }
 body.shinden-list .advanced-tag-item .checkbox-label.checked .checkbox-label-text { color: #fff !important; }
 
-/* stopka: Anuluj / Filtruj */
 body.shinden-list .modal-footer {
   flex: none;
   gap: 8px;
@@ -2608,8 +2424,6 @@ body.shinden-list .modal-footer-button--save {
 }
 body.shinden-list .modal-footer-button--save:hover { color: #fff !important; box-shadow: inset 0 0 0 1px var(--gold-light), 0 0 16px rgba(var(--accent-rgb), .7); }
 
-/* okna „Zaznacz wiele” (status / notatka / listy własne dla wielu tytułów): rozwijana lista „Wybrane tytuły”
-   to akordeon MUI z białym tłem, a tytuły w nim są białe — były niewidoczne */
 body.shinden-list .bulkUpdate-accordion-wrapper .MuiPaper-root {
   margin: 0 0 14px !important;
   color: var(--text) !important;
@@ -2630,1005 +2444,4 @@ body.shinden-list .bulkUpdate-accordion-content {
   scrollbar-color: rgba(var(--gold-rgb), .55) transparent;
 }
 body.shinden-list .bulkUpdate-accordion-content .title-edit-modal-wrapper + .title-edit-modal-wrapper { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
-body.shinden-list .bulkUpdate-accordion-content .title-edit-modal-link { font-size: 14px !important; }
-
-/* rozmiar okien: tak małe, jak pozwala treść. Wcześniej każde okno dostawało max-width 1180 px, co
-   nadpisywało rozmiary Shindena (--sm 600 px, --xs 400 px) — np. edycja odcinków zajmowała całą stronę.
-   Szerokie zostaje tylko okno tagów (--xl) */
-body.shinden-list .modal-inner:not(.modal-size--xl) {
-  width: fit-content !important;
-  min-width: min(380px, 92vw);
-  max-width: min(600px, 92vw) !important;
-}
-body.shinden-list .modal-inner.modal-size--xs { max-width: min(420px, 92vw) !important; }
-/* lista zaawansowanej edycji: Shinden daje jej 60vh — na dużym ekranie okno sięgało prawie do dołu */
-body.shinden-list .modal-content [class*="-advance-wrapper"] { max-height: min(60vh, 460px) !important; }
-
-/* zaawansowana edycja odcinków / rozdziałów: przyciski Shindena (.button, szare listki #2f2f2f),
-   wiersze z ciemną kreską #222 i numery w zwykłym foncie */
-body.shinden-list .modal-content .button {
-  min-height: 30px;
-  padding: 6px 14px !important;
-  font-family: var(--font-label) !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--text) !important;
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: var(--radius-sm) !important;
-  box-shadow: inset 0 0 0 1px var(--line);
-  transition: color .2s, background .2s, box-shadow .2s;
-}
-body.shinden-list .modal-content .button:hover {
-  color: var(--gold-light) !important;
-  background: rgba(var(--gold-rgb), .08) !important;
-  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .7);
-}
-/* „−” i „+” przy licznikach */
-body.shinden-list .modal-content .button.button-small {
-  width: 30px;
-  min-height: 30px;
-  padding: 0 !important;
-  font-family: var(--font) !important;
-  font-size: 16px !important;
-  letter-spacing: 0;
-  color: var(--gold) !important;
-}
-body.shinden-list .modal-content .button.button-small:hover { color: var(--gold-light) !important; }
-body.shinden-list .modal-content [class*="-buttons"] { gap: 6px; flex-wrap: wrap; }
-body.shinden-list .modal-content [class*="-list-item"] { border-bottom: 1px solid var(--line) !important; transition: background .15s; }
-body.shinden-list .modal-content [class*="-list-item"]:hover { background: rgba(var(--gold-rgb), .04); }
-body.shinden-list .modal-content [class*="-episodeNo"] { font-family: var(--font-label) !important; font-size: 12px !important; color: var(--muted) !important; }
-body.shinden-list .modal-content [class*="-list-item"] [class*="-title"] { color: var(--text) !important; }
-body.shinden-list .modal-content [class*="-counter-button"] { margin: 0 6px !important; }
-/* zakres odcinków / rozdziałów („Od … Do …”): etykiety jak nagłówki sekcji, pola obok siebie */
-body.shinden-list .modal-content :is(.modal-episodes-range, .modal-chapters-range) { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-body.shinden-list .modal-content [class*="-range-text"] {
-  margin: 0 !important;
-  font-family: var(--font-label) !important;
-  font-size: 11px !important;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--muted) !important;
-}
-body.shinden-list .modal-content [class*="-range-text--2"] { margin-left: 8px !important; }
-body.shinden-list .modal-content [class*="-range-input"] { flex: 1 1 110px; max-width: 160px; }
-body.shinden-list .modal-content [class*="-advance-wrapper"] { scrollbar-width: thin; scrollbar-color: rgba(var(--gold-rgb), .55) transparent; padding-right: 6px; }
-
-@media (max-width: 767px) {
-  body.shinden-list .modal-inner,
-  body.shinden-list .modal-inner:not(.modal-size--xl),
-  body.shinden-list .modal-inner.modal-size--xs { width: 100% !important; min-width: 0; max-width: 100% !important; }
-  body.shinden-list .advanced-tags-list { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-  body.shinden-list .advanced-tags-wrapper .tab-header { padding: 10px 12px 0; }
-  body.shinden-list .advanced-tags-wrapper .tab-content { padding: 12px 12px 6px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  body.shinden-list .modal-header h4::after { animation: none; }
-}
-
-/* =====================================================================
-   WIDOK TABELI (pierwszy przycisk nad listą) — KSIĘGA
-   karta grimuaru z ozdobnym tytułem, status jako złocona etykieta,
-   wiersze „wpisywane atramentem” po kolei, gwiazdka przy tytule pod myszką
-   ===================================================================== */
-/* tytuł księgi — zależy od rodzaju listy */
-body.shinden-list       { --ksiega: var(--ksiega-anime); }
-body.shinden-list.manga { --ksiega: var(--ksiega-manga); }
-body.shinden-list.novel { --ksiega: var(--ksiega-novel); }
-
-/* karta księgi */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .table-wrapper {
-  background: rgba(8, 5, 14, .6);
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px var(--line), inset 0 0 50px rgba(var(--accent-rgb), .05);
-  padding-bottom: 12px;
-}
-/* tytuł: „✦ SNIKU · Księga Anime ✦” między złotymi liniami */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .table-wrapper::before {
-  content: "✦  " var(--nick) "  ·  " var(--ksiega) "  ✦";
-  display: block;
-  padding: 10px 12px 9px;
-  text-align: center;
-  white-space: pre;
-  font-family: var(--font-label) !important;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: .24em;
-  text-transform: uppercase;
-  color: var(--gold);
-  background:
-    linear-gradient(90deg, transparent 5%, rgba(var(--gold-rgb), .5) 30%, transparent 40%, transparent 60%, rgba(var(--gold-rgb), .5) 70%, transparent 95%) center / 100% 1px no-repeat,
-    rgba(var(--accent-rgb), .06);
-  border-bottom: 1px solid var(--line);
-}
-/* zakończenie strony księgi: ozdobnik */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .table-wrapper::after {
-  content: "— ❦ —";
-  display: block;
-  margin: 14px 0 2px;
-  text-align: center;
-  font-size: 18px;
-  line-height: 1;
-  color: rgba(var(--gold-rgb), .6);
-}
-
-/* nagłówek kolumn */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .table-header {
-  border: 0 !important;
-  border-bottom: 1px solid rgba(var(--gold-rgb), .25) !important;
-  background: transparent !important;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .table-header-label {
-  justify-content: flex-start;
-  text-align: left !important;
-  background: transparent !important;
-  color: var(--gold) !important;
-  letter-spacing: .14em !important;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .table-header-item:first-child .table-header-label { padding-left: 116px !important; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .table-header-item:last-child .table-header-label { justify-content: center; }
-
-/* wiersze: bez pionowych linii, cienka linia między wierszami */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-wrapper {
-  border: 0 !important;
-  border-bottom: 1px solid rgba(var(--gold-rgb), .08) !important;
-  background: transparent !important;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-item { border: 0 !important; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-item:first-child { padding-left: 106px !important; }
-/* kolumna tytułu: długi tytuł w jednej linii, ucięty wielokropkiem (wiersz ma stałą wysokość) */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-item:first-child { min-width: 0; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-item:first-child .listRowDesktop-item-value { min-width: 0; overflow: hidden; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .cellLink-wrapper { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-/* status: złocona etykieta z nazwą („OBEJRZANE”) zamiast klejnotu */
-/* szerokość: równe 94 px (rośnie, gdy napis dłuższy) — „PRZECZYTANE” wychodził poza stałe 84 px */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-wrapper::before {
-  content: var(--st-label);
-  left: 12px;
-  width: auto;
-  min-width: 94px;
-  box-sizing: border-box;
-  height: auto;
-  margin: 0;
-  padding: 3px 7px 2px;
-  transform: translateY(-50%);
-  text-align: center;
-  background: color-mix(in srgb, var(--st) 12%, transparent) !important;
-  border: 0 !important;
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--st) 55%, transparent);
-  font-family: var(--font-label) !important;
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  line-height: 1.2;
-  white-space: nowrap;
-  color: var(--st);
-  text-shadow: 0 0 6px color-mix(in srgb, var(--st) 60%, transparent);
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-wrapper:hover::before { transform: translateY(-50%); }
-/* treść wiersza */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .cellLink-link {
-  font-size: 16px;
-  font-weight: 500 !important;
-  color: #f1e8fa !important;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .cellDefault-value {
-  font-family: var(--font-label) !important;
-  font-size: 12.5px;
-  color: var(--muted);
-}
-/* wiersz pod myszką: fioletowa poświata + mrugająca gwiazdka za tytułem */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-content:hover {
-  background: linear-gradient(90deg, rgba(var(--accent-rgb), .18), rgba(var(--accent-rgb), .03)) !important;
-  box-shadow: inset 2px 0 0 var(--gold);
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-content:hover :is(.cellLink-link, .cellDefault-value) { color: #fff !important; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-content:hover .cellLink-link { text-shadow: 0 0 10px rgba(var(--accent-rgb), .9); }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-content:hover .cellLink-link::after {
-  content: "✦";
-  display: inline-block;
-  margin-left: 7px;
-  font-size: .8em;
-  color: var(--gold-light);
-  text-shadow: 0 0 8px var(--gold);
-  animation: gwiazdka 1.6s ease-in-out infinite;
-}
-
-/* ---------- animacje pojawiania się wierszy (tabela i lista z okładkami) ----------
-   --d = opóźnienie dla kolejnych wierszy. Shinden od razu rysuje ok. 38 wierszy (na wysokim
-   ekranie widać ich ponad 25), więc kolejka obejmuje pierwsze 40; wiersze doczytane później
-   (przewijanie, „Załaduj wszystko”) pojawiają się od razu, bez czekania */
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(1) { --d: 0.04s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(2) { --d: 0.07s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(3) { --d: 0.10s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(4) { --d: 0.13s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(5) { --d: 0.16s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(6) { --d: 0.19s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(7) { --d: 0.22s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(8) { --d: 0.25s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(9) { --d: 0.28s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(10) { --d: 0.31s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(11) { --d: 0.34s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(12) { --d: 0.37s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(13) { --d: 0.40s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(14) { --d: 0.43s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(15) { --d: 0.46s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(16) { --d: 0.49s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(17) { --d: 0.52s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(18) { --d: 0.55s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(19) { --d: 0.58s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(20) { --d: 0.61s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(21) { --d: 0.64s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(22) { --d: 0.67s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(23) { --d: 0.70s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(24) { --d: 0.73s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(25) { --d: 0.76s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(26) { --d: 0.79s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(27) { --d: 0.82s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(28) { --d: 0.85s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(29) { --d: 0.88s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(30) { --d: 0.91s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(31) { --d: 0.94s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(32) { --d: 0.97s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(33) { --d: 1.00s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(34) { --d: 1.03s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(35) { --d: 1.06s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(36) { --d: 1.09s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(37) { --d: 1.12s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(38) { --d: 1.15s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(39) { --d: 1.18s; }
-body.shinden-list :is(.listRowDesktop-wrapper, .listRowMobile-wrapper):nth-child(40) { --d: 1.21s; }
-
-/* animacja wejścia tylko przy pierwszym rysowaniu listy (i po przełączeniu widoku).
-   Lista jest wirtualizowana: przy przewijaniu React tworzy wiersze od nowa, więc bez tego
-   każdy wiersz po powrocie na górę odpalał animację jeszcze raz.
-   --wejscie gaśnie z 1 do 0 po 2,5 s od pojawienia się listy; później nowe wiersze dostają
-   animację o czasie 0 (od razu w stanie końcowym). Osobna nazwa licznika dla każdego widoku —
-   zmiana nazwy restartuje licznik, więc przełączenie tabela ↔ okładki znów animuje wiersze.
-   UWAGA: bez wartości zapasowej w var(--wejscie)! Zmienna sterowana animacją jest „animation-tainted”
-   i we właściwościach animation-* przestaje działać — z zapasem (var(--wejscie, 1)) przeglądarka brała 1
-   i animacja dalej się powtarzała; bez zapasu reguła animation jest wtedy nieważna = brak animacji */
-@property --wejscie { syntax: '<number>'; inherits: true; initial-value: 1; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .ReactVirtualized__Grid__innerScrollContainer { animation: wejscie-koniec-1 0s linear 2.5s forwards; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .ReactVirtualized__Grid__innerScrollContainer { animation: wejscie-koniec-2 0s linear 2.5s forwards; }
-@keyframes wejscie-koniec-1 { to { --wejscie: 0; } }
-@keyframes wejscie-koniec-2 { to { --wejscie: 0; } }
-
-/* tabela: wiersz „wpisuje się atramentem” od lewej */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowDesktop-wrapper {
-  animation: atrament calc(.7s * var(--wejscie)) cubic-bezier(.3, .7, .3, 1) calc(var(--d, 0s) * var(--wejscie)) backwards;
-}
-@keyframes atrament {
-  from { clip-path: inset(0 100% 0 0); opacity: .2; }
-  to   { clip-path: inset(0 0 0 0); opacity: 1; }
-}
-/* lista z okładkami: wiersz wyłania się z mgły */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-wrapper {
-  animation: kadr-wejscie calc(.8s * var(--wejscie)) cubic-bezier(.2, .8, .2, 1) calc(var(--d, 0s) * var(--wejscie)) backwards;
-}
-@keyframes kadr-wejscie {
-  from { opacity: 0; transform: translateY(10px); filter: blur(6px) brightness(1.6); }
-}
-
-/* =====================================================================
-   WIDOK LISTY Z OKŁADKAMI (drugi przycisk) — KADR W TLE
-   zamiast miniatury za tytułem leży poziomy pasek plakatu, przyciemniony;
-   kolumna „Okładka” jest schowana, status to klejnot przed tytułem
-   ===================================================================== */
-/* kolumna okładki: nagłówek znika, w wierszu zostaje o zerowej szerokości
-   (sama okładka jest potrzebna — z niej bierze się obrazek do tła) */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .table-header-item:first-child { display: none; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-item:first-child {
-  flex: 0 0 0 !important;
-  width: 0 !important;
-  min-width: 0;
-  padding: 0 !important;
-  border: 0 !important;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-item:nth-child(2) { padding-left: 34px !important; }
-/* okładka niewidoczna, a jej obrazek (background: inherit) rozciągnięty na lewą część wiersza.
-   static/none: inaczej warstwa ::before liczyłaby rozmiar od miniatury, nie od wiersza */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .cellCover-wrapper { position: static !important; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .cellCover-image {
-  visibility: hidden;
-  filter: none !important;
-  transform: none !important;
-  clip-path: none !important;
-  outline: 0 !important;
-  transition: none !important;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .cellCover-image::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: 0; bottom: 0; left: 0;
-  width: 62%;
-  visibility: visible;
-  background: inherit;
-  background-size: cover;
-  background-position: center 28%;
-  filter: brightness(.42) saturate(1.1);
-  -webkit-mask-image: linear-gradient(90deg, #000 55%, transparent);
-          mask-image: linear-gradient(90deg, #000 55%, transparent);
-  transition: filter .35s, background-position 1.2s ease-out;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-wrapper {
-  overflow: hidden;
-  border-left: 0 !important;
-  border-bottom: 1px solid rgba(0, 0, 0, .6) !important;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-content {
-  background: linear-gradient(90deg, rgba(var(--bg-rgb), .92) 0%, rgba(var(--bg-rgb), .55) 35%, rgba(var(--bg-rgb), .75) 75%, rgba(var(--bg-rgb), .95)) !important;
-}
-/* po najechaniu kadr się rozjaśnia i powoli przesuwa w dół plakatu */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-content:hover {
-  background: linear-gradient(90deg, rgba(var(--bg-rgb), .85) 0%, rgba(var(--bg-rgb), .15) 40%, rgba(var(--bg-rgb), .55) 75%, rgba(var(--bg-rgb), .9)) !important;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-content:hover .cellCover-image::before {
-  filter: brightness(.8) saturate(1.2);
-  background-position: center 45%;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .cellLink-link { font-size: 17px; text-shadow: 0 2px 6px #000; }
-/* długi tytuł: najwyżej 2 linie z „…” — wiersz ma stałą wysokość z ReactVirtualized (58 px), a 3 linie (66 px)
-   wychodziły nad i pod wiersz. Pełny tytuł widać w podglądzie okładki po najechaniu */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-wrapper .cellLink-value {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
-  line-height: 1.25;
-}
-/* status: ten sam świecący klejnot co w innych widokach, tuż przed tytułem */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-wrapper::before { left: 13px; }
-
-/* ramka: cienka obwódka wokół całej listy, bez pionowych linii między kolumnami
-   (bez clip-path — w tej ramce siedzi okienko podglądu okładki i zostałoby ucięte) */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .table-wrapper {
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px var(--line);
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .table-header {
-  border: 0 !important;
-  background: rgba(var(--accent-rgb), .05) !important;
-}
-/* pod nagłówkiem linia róż → fiolet → złoto */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .table-wrapper > .table-header {
-  /* linia jako warstwa tła na miejscu przezroczystej dolnej ramki (border-box), nie border-image — ten nie zawsze się rysował */
-  border-bottom: 1px solid transparent !important;
-  background: linear-gradient(90deg, var(--accent-2), var(--accent) 45%, var(--gold) 75%, transparent) left bottom / 100% 1px no-repeat border-box, rgba(var(--accent-rgb), .05) !important;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .table-header-label {
-  height: 34px !important;
-  background: transparent !important;
-  color: var(--muted) !important;
-  font-size: 10.5px !important;
-  letter-spacing: .2em !important;
-  transition: color .2s;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .table-header-item:nth-child(2) .table-header-label { justify-content: flex-start; text-align: left; padding-left: 34px !important; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .table-header:hover .table-header-label { color: var(--gold-light) !important; }
-/* strzałki sortowania: przygaszone, aktywna świeci */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .table-header-arrow { color: rgba(var(--accent-rgb), .25) !important; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .table-header-arrow.is-active { color: var(--accent-2) !important; filter: drop-shadow(0 0 4px var(--accent-2)); }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-item { border: 0 !important; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-wrapper { border-bottom-color: rgba(var(--gold-rgb), .09) !important; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-item:nth-child(n + 3) .listRowDesktop-item-value { text-align: center; }
-
-/* ogólna: gwiazdka + ocena */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) :is(.listRowDesktop-item, .listRowMobile-item):nth-child(3) .cellDefault-value {
-  font-family: var(--font-label) !important;
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) :is(.listRowDesktop-item, .listRowMobile-item):nth-child(3) .cellDefault-value::before {
-  content: "★ ";
-  color: var(--gold);
-  text-shadow: 0 0 6px rgba(var(--gold-rgb), .6);
-}
-/* postęp: licznik w owalnej ramce, „EP” jak na kafelkach */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .cellProgress-progress {
-  display: inline-block;
-  padding: 4px 11px 4px 10px;
-  font-size: 12.5px !important;
-  white-space: nowrap;
-  color: #fff !important;
-  background: rgba(var(--accent-rgb), .1);
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .35);
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .cellProgress-progress::before {
-  content: var(--ep-label);
-  font-size: 10px;
-  letter-spacing: .1em;
-  color: var(--accent-2);
-}
-/* typ: mała etykieta w obwódce */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) :is(.listRowDesktop-item, .listRowMobile-item):nth-child(5) .cellDefault-value {
-  display: inline-block;
-  min-width: 46px;
-  padding: 3px 9px;
-  font-family: var(--font-label) !important;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--accent-light);
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px rgba(var(--accent-rgb), .4);
-}
-/* opcje „•••”: przygaszone, po najechaniu na wiersz zapalają się */
-/* wygląd „•••” jak na kafelkach (reguła przy kafelkach); tu tylko: wyśrodkowany, przygaszony, pełny po najechaniu wiersza */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .dropdown-button {
-  margin: 0 auto;
-  opacity: .55;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-content:hover .dropdown-button { opacity: 1; }
-/* po najechaniu wiersza wartości się rozjaśniają */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-content:hover .cellProgress-progress {
-  background: rgba(var(--accent-rgb), .2);
-  box-shadow: inset 0 0 0 1px var(--gold), 0 0 10px rgba(var(--accent-rgb), .4);
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowDesktop-content:hover .listRowDesktop-item:nth-child(5) .cellDefault-value { box-shadow: inset 0 0 0 1px var(--accent); }
-
-/* =====================================================================
-   TELEFON (węższe niż 768px) — Shinden podmienia wtedy wiersze na karty
-   .listRowMobile-*, z podpisami „Tytuł:”, „Ogólna:” jeden pod drugim.
-   Tu te same dwa style: księga i kadr w tle, tylko ułożone w karcie.
-   ===================================================================== */
-body.shinden-list .listMobile > div { border: 0 !important; }
-body.shinden-list .listRowMobile-wrapper {
-  background: transparent !important;
-  border: 0 !important;
-  border-bottom: 1px solid rgba(var(--gold-rgb), .1) !important;
-}
-body.shinden-list .listRowMobile-item { margin: 0 !important; text-align: left !important; }
-body.shinden-list .listRowMobile-content {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 12px;
-}
-
-/* --- księga: etykieta statusu, tytuł, a pod spodem „ogólna: - postęp: 0 / 12 typ: TV” --- */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-wrapper {
-  animation: atrament calc(.7s * var(--wejscie)) cubic-bezier(.3, .7, .3, 1) calc(var(--d, 0s) * var(--wejscie)) backwards;
-}
-/* Shinden ma tu własny ::before — kolorowy pasek na całą wysokość (top/bottom 0, margin auto) */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-wrapper::before {
-  content: var(--st-label);
-  position: absolute;
-  left: 12px;
-  top: 14px;
-  bottom: auto;
-  width: auto;
-  min-width: 94px;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 3px 7px 2px;
-  text-align: center;
-  background: color-mix(in srgb, var(--st) 12%, transparent) !important;
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--st) 55%, transparent);
-  font-family: var(--font-label) !important;
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  line-height: 1.2;
-  white-space: nowrap;
-  color: var(--st);
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-content { padding: 12px 12px 12px 106px !important; gap: 4px 14px; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-item:has(.cellLink-wrapper) { flex: 1 0 100%; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-wrapper .cellLink-title { display: none; }
-/* na telefonie długi tytuł łamie się na kilka linii zamiast ucinać */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-wrapper .cellLink-wrapper { white-space: normal; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-wrapper .cellLink-link {
-  font-size: 15px;
-  font-weight: 500 !important;
-  line-height: 1.35;
-  color: #f1e8fa !important;
-}
-/* telefon, widok tabeli: zamiast pastylki z nazwą statusu sama ikona (te same złote ikony liniowe co w panelu
-   „Listy”, tu w kolorze statusu) — tytuł ma więcej miejsca, a „PRZECZYTANE” itp. nie muszą się mieścić w pastylce */
-body.shinden-list .listRowMobile-wrapper.in-progress { --ik-st: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E"); }
-body.shinden-list .listRowMobile-wrapper.completed { --ik-st: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 12.5l4.5 4.5L19.5 6.5'/%3E%3C/svg%3E"); }
-body.shinden-list .listRowMobile-wrapper.skip { --ik-st: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8'/%3E%3Cpath d='M6.5 17.5l11-11'/%3E%3C/svg%3E"); }
-body.shinden-list .listRowMobile-wrapper.hold { --ik-st: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 3.5h10M7 20.5h10M8 3.5c0 4.5 8 4.5 8 8.5s-8 4-8 8.5M16 3.5c0 4.5-8 4.5-8 8.5s8 4 8 8.5'/%3E%3C/svg%3E"); }
-body.shinden-list .listRowMobile-wrapper.dropped { --ik-st: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 6.5l11 11M17.5 6.5l-11 11'/%3E%3C/svg%3E"); }
-body.shinden-list .listRowMobile-wrapper.plan { --ik-st: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 4C12.5 4.5 7.5 9.5 6 18l-1.5 2.5M20 4c-.5 7.5-5.5 12.5-14 14M10 14l4-4'/%3E%3C/svg%3E"); }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-wrapper::before {
-  content: "" !important;
-  top: 12px !important;
-  width: 18px !important;
-  min-width: 0 !important;
-  height: 18px !important;
-  padding: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  background: var(--st, var(--gold)) !important;
-  -webkit-mask: var(--ik-st, none) center / contain no-repeat;
-          mask: var(--ik-st, none) center / contain no-repeat;
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--st, var(--gold)) 70%, transparent));
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-content { padding: 9px 12px 9px 42px !important; gap: 3px 12px; }
-/* wiersz ma stałą wysokość z ReactVirtualized (85 px, przy długim tytule 117 px) — tytuł najwyżej 2 linie z „…”
-   (pełny tytuł jest po wejściu w pozycję). Żeby 2 linie + wiersz „ogólna / postęp” zmieściły się w 85 px,
-   „•••” stoi w prawym górnym rogu zamiast w osobnej linii, a miejsce na niego ma tylko tytuł */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-wrapper .cellLink-value { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-item:has(.cellLink-wrapper) { padding-right: 30px; box-sizing: border-box; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-item:has(.cell-options-wrapper) { position: absolute !important; top: 7px; right: 6px; margin: 0 !important; }
-/* widok z okładkami na telefonie: to samo ograniczenie (89 px = 1 linia tytułu, więcej = 2) */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowMobile-wrapper .cellLink-value { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowMobile-wrapper[style*="height: 89px"] .cellLink-value { -webkit-line-clamp: 1; line-clamp: 1; }
-/* podpisy kolumn: małe, złote kapitaliki */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-wrapper :is(.cellDefault-title, .cellProgress-title) {
-  margin-right: 5px;
-  font-family: var(--font-label) !important;
-  font-size: 10.5px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--gold);
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-wrapper :is(.cellDefault-value, .cellProgress-progress) {
-  font-family: var(--font-label) !important;
-  font-size: 12px;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--1.is-active) .listRowMobile-item:has(.cell-options-wrapper) { margin-left: auto !important; }
-
-/* --- kadr w tle: plakat na całą kartę, klejnot przed tytułem, wartości w jednym rzędzie --- */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowMobile-wrapper {
-  overflow: hidden;
-  border-bottom-color: rgba(0, 0, 0, .6) !important;
-  animation: kadr-wejscie calc(.8s * var(--wejscie)) cubic-bezier(.2, .8, .2, 1) calc(var(--d, 0s) * var(--wejscie)) backwards;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowMobile-wrapper::before {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  left: 13px;
-  top: 21px;
-  bottom: auto;
-  width: 7px;
-  height: 7px;
-  margin: 0;
-  transform: rotate(45deg);
-  background: var(--st);
-  box-shadow: 0 0 6px var(--st), 0 0 14px var(--st);
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowMobile-wrapper:is(.plan, .skip)::before {
-  background: var(--bg-solid);
-  border: 1.5px solid var(--st);
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowMobile-content {
-  padding: 14px 12px 14px 32px !important;
-  background: linear-gradient(90deg, rgba(var(--bg-rgb), .9), rgba(var(--bg-rgb), .5) 60%, rgba(var(--bg-rgb), .8));
-}
-/* niewidoczna miniatura nie zajmuje miejsca (jej ::before i tak liczy rozmiar od całej karty) */
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowMobile-item:first-child { flex: 1 0 100%; height: 0; margin-bottom: -6px !important; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowMobile-item:nth-child(2) { flex: 1 0 100%; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowMobile-wrapper .cellCover-image::before {
-  width: 100%;
-  -webkit-mask-image: none;
-          mask-image: none;
-}
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowMobile-wrapper :is(.cellLink-title, .cellDefault-title, .cellProgress-title) { display: none; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowMobile-wrapper .cellLink-link { line-height: 1.3; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowMobile-item:has(.cell-options-wrapper) { margin-left: auto !important; }
-body.shinden-list .view-content-wrapper:has(.view-changer-button--2.is-active) .listRowMobile-wrapper .dropdown-button { opacity: .8; }
-
-@media (prefers-reduced-motion: reduce) {
-  body.shinden-list .listRowDesktop-wrapper,
-  body.shinden-list .listRowDesktop-wrapper::before,
-  body.shinden-list .cellCover-image { animation: none !important; }
-}
-
-/* =====================================================================
-   STOPKA — „SHINDEN 2026” po lewej, podpis autora stylu po prawej
-   ===================================================================== */
-body.shinden-list .footer-wrapper {
-  position: relative;
-  margin-top: 40px;
-  padding: 20px 0 26px !important;
-  background:
-    linear-gradient(to bottom, rgba(var(--accent-rgb), .07), transparent 70%),
-    rgba(var(--bg-rgb), .92) !important;
-  border-top: 0 !important;
-}
-/* złota linia u góry, po której przesuwa się błysk */
-body.shinden-list .footer-wrapper::before {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; top: 0;
-  height: 1px;
-  background:
-    linear-gradient(90deg, transparent, #fff 50%, transparent) -30% 0 / 30% 100% no-repeat,
-    linear-gradient(90deg, transparent, var(--gold) 20%, var(--gold-light) 50%, var(--gold) 80%, transparent);
-  box-shadow: 0 0 12px rgba(var(--gold-rgb), .5), 0 0 26px rgba(var(--accent-rgb), .35);
-  animation: stopka-blysk 6s linear infinite;
-}
-@keyframes stopka-blysk {
-  from { background-position: -30% 0, 0 0; }
-  to   { background-position: 130% 0, 0 0; }
-}
-/* ozdobny szlaczek z rombów na samym dole */
-body.shinden-list .footer-wrapper::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: 6px;
-  height: 10px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='10'%3E%3Cpath d='M12 1l4 4-4 4-4-4z' fill='none' stroke='%23d9b56c' stroke-width='1'/%3E%3Ccircle cx='0' cy='5' r='1' fill='%23d9b56c'/%3E%3Ccircle cx='24' cy='5' r='1' fill='%23d9b56c'/%3E%3C/svg%3E") center / 24px 10px repeat-x;
-  opacity: .55;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
-}
-body.shinden-list .footer-wrapper .wrapper-container {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 12px;
-}
-body.shinden-list .footer-text a {
-  font-family: var(--font-label) !important;
-  font-size: 12px !important;
-  font-weight: 600;
-  letter-spacing: .2em !important;
-  text-transform: uppercase;
-  color: var(--muted) !important;
-  transition: color .2s, text-shadow .2s;
-}
-body.shinden-list .footer-text a::before { content: "✦ "; color: var(--gold); }
-body.shinden-list .footer-text a:hover { color: var(--gold-light) !important; text-shadow: 0 0 8px rgba(var(--gold-rgb), .7); }
-/* podpis: „STYLE BY” jako wstęga + złoto-liliowa nazwa z blaskiem */
-body.shinden-list .footer-wrapper .wrapper-container::before {
-  content: "STYLE BY";
-  order: 1;
-  margin-left: auto;
-  padding: 4px 16px 3px;
-  font-family: var(--font-label) !important;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .2em;
-  color: var(--gold-light);
-  background:
-    linear-gradient(var(--gold), var(--gold)) top / 100% 1px no-repeat,
-    linear-gradient(var(--gold), var(--gold)) bottom / 100% 1px no-repeat,
-    linear-gradient(90deg, #5a1650, #7a1d5c 50%, #3b1660);
-  clip-path: polygon(0 0, 100% 0, calc(100% - 7px) 50%, 100% 100%, 0 100%, 7px 50%);
-}
-body.shinden-list .footer-wrapper .wrapper-container::after {
-  content: var(--stopka-autor);
-  order: 2;
-  font-family: var(--font-display) !important;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  color: transparent;
-  background: linear-gradient(100deg, #e9d4ff 0%, #ffffff 30%, var(--gold-light) 45%, #fff8e8 50%, var(--gold-light) 55%, #ffffff 70%, #e9d4ff 100%) 0 0 / 300% 100%;
-  -webkit-background-clip: text;
-          background-clip: text;
-  filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), .6));
-  animation: nick-blask 7s ease-in-out 3s infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  body.shinden-list .footer-wrapper::before,
-  body.shinden-list .footer-wrapper .wrapper-container::after { animation: none; }
-}
-/* telefon: podpis nie mieści się obok „SHINDEN 2026” i „STYLE BY”, więc zawija się do drugiej linii — stoi po prawej,
-   pod wstęgą (spadał na lewo). Przycisk „do góry” (fixed: 45 px, 15 px od dołu) zasłaniałby go na końcu strony,
-   więc stopka ma u dołu 72 px miejsca (12 px odstępu nad przyciskiem) */
-@media (max-width: 767px) {
-  body.shinden-list .footer-wrapper { padding-bottom: 72px !important; }
-  body.shinden-list .footer-wrapper .wrapper-container::after { margin-left: auto; }
-}
-
-/* =====================================================================
-   USTAWIENIA (po zalogowaniu: /settings/…) — ogólne, generator wyglądu,
-   własny CSS, import z MAL, listy własne, oceny skinów
-   ===================================================================== */
-/* panel: jak panel listy — tło i ramka na osobnej warstwie (reguła ::before przy panelach wyżej) */
-body.shinden-list .settingsContent-wrapper {
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  padding: 20px 22px !important;
-  isolation: isolate;
-}
-body.shinden-list .settingsContent-header h3 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0 0 22px !important;
-  font-family: var(--font-title) !important;
-  font-size: 23px !important;
-  font-weight: 700 !important;
-  letter-spacing: .08em !important;
-  text-transform: uppercase;
-}
-body.shinden-list .settingsContent-header h3::after {
-  content: "✦";
-  display: inline-block;
-  font-size: 15px;
-  color: var(--accent-2);
-  text-shadow: 0 0 10px var(--accent-2);
-  animation: gwiazdka 2.4s ease-in-out infinite;
-}
-/* nagłówki sekcji („Typ listy”, „Ustawienia kolumn”…): złote kapitaliki + linia do prawej */
-body.shinden-list .settingsContent-wrapper .title-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-body.shinden-list .settingsContent-wrapper .title-wrapper::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line), transparent); }
-body.shinden-list .settingsContent-wrapper .title-wrapper :is(h2, h3, h4, h5) {
-  margin: 0 !important;
-  font-family: var(--font-label) !important;
-  font-size: 11.5px !important;
-  font-weight: 600 !important;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  text-decoration: none !important;
-  border: 0 !important;
-  color: var(--gold) !important;
-}
-
-/* fioletowe ramki z informacjami → notatka z różaną kreską */
-body.shinden-list .description-box {
-  padding: 12px 16px !important;
-  text-align: left !important;
-  background: rgba(var(--accent-2-rgb), .06) !important;
-  border: 0 !important;
-  border-left: 2px solid var(--accent-2) !important;
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0 !important;
-  box-shadow: none !important;
-}
-body.shinden-list .description-box::before {
-  content: "✦ INFO";
-  display: block;
-  margin-bottom: 4px;
-  font-family: var(--font-label) !important;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: .18em;
-  color: var(--gold);
-}
-body.shinden-list .description-box :is(p, span, a) { font-size: 14px !important; line-height: 1.5; color: #ddd0ea !important; }
-body.shinden-list .description-box :is(strong, b) { color: #fff; }
-body.shinden-list .description-box a { color: var(--accent-light) !important; }
-
-/* przyciski radio: klejnoty jak uchwyty suwaka */
-body.shinden-list .radio-label::before {
-  width: 11px !important;
-  height: 11px !important;
-  left: 2px !important;
-  border: 1px solid var(--gold) !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  transform: rotate(45deg);
-}
-body.shinden-list .radio-label::after {
-  width: 5px !important;
-  height: 5px !important;
-  left: 5px !important;
-  border-radius: 0 !important;
-  background: var(--accent) !important;
-  box-shadow: 0 0 6px var(--accent);
-  transform: rotate(45deg);
-}
-body.shinden-list .radio-label { color: var(--text); }
-
-/* przyciski: Zapisz = fioletowo-różany, Przywróć do domyślnych = różana obwódka */
-body.shinden-list .settingsContent-wrapper .button {
-  padding: 10px 22px !important;
-  font-family: var(--font-label) !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: #fff !important;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2)) !important;
-  border: 0 !important;
-  border-radius: var(--radius-sm) !important;
-  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .6);
-  transition: background .2s, box-shadow .2s, color .2s;
-}
-body.shinden-list .settingsContent-wrapper .button:hover { box-shadow: inset 0 0 0 1px var(--gold-light), 0 0 16px rgba(var(--accent-rgb), .6); }
-body.shinden-list .settingsContent-wrapper .resetToDefaultBtn .button {
-  color: var(--accent-2) !important;
-  background: transparent !important;
-  box-shadow: inset 0 0 0 1px rgba(var(--accent-2-rgb), .55);
-}
-body.shinden-list .settingsContent-wrapper .resetToDefaultBtn .button:hover {
-  color: #fff !important;
-  background: var(--accent-2) !important;
-  box-shadow: 0 0 16px rgba(var(--accent-2-rgb), .55);
-}
-
-/* generator wyglądu: etykiety stref („Obrazek nad listą”), próbki kolorów, okno wyboru koloru */
-body.shinden-list .descriptionLine-wrapper::before { background: var(--line) !important; }
-body.shinden-list .descriptionLine-text {
-  position: relative;
-  padding: 4px 10px !important;
-  font-family: var(--font-label) !important;
-  font-size: 10.5px !important;
-  font-weight: 600;
-  letter-spacing: .18em;
-  color: var(--gold-light) !important;
-  background: var(--panel-solid) !important;
-  border: 1px solid var(--line) !important;
-  border-left: 2px solid var(--accent-2) !important;
-}
-body.shinden-list .colorPicker-button {
-  width: 46px !important;
-  height: 26px !important;
-  border: 0 !important;
-  border-radius: 4px !important;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, .25), 0 0 0 3px var(--panel-solid), 0 0 0 4px rgba(var(--gold-rgb), .35) !important;
-  transition: box-shadow .2s;
-}
-body.shinden-list .colorPicker-button:hover { box-shadow: 0 0 0 1px #fff, 0 0 0 3px var(--panel-solid), 0 0 0 4px var(--gold), 0 0 12px rgba(var(--accent-rgb), .5) !important; }
-body.shinden-list .sketch-picker {
-  background: var(--panel-solid) !important;
-  border-radius: 8px !important;
-  box-shadow: 0 0 0 1px var(--gold), 0 0 18px rgba(var(--accent-rgb), .35) !important;
-}
-body.shinden-list .sketch-picker input {
-  background: var(--input-bg) !important;
-  color: var(--text) !important;
-  border-radius: 4px !important;
-  box-shadow: inset 0 0 0 1px var(--line) !important;
-}
-body.shinden-list .sketch-picker :is(label, span) { color: var(--muted) !important; }
-body.shinden-list [class*="Zone-value"] { font-family: var(--font-label) !important; color: var(--gold-light) !important; }
-
-/* dymki (react-tooltip, np. przy „Załaduj wszystko”): Shinden daje szare tło #353535 przez wbudowany <style>
-   z haszowaną klasą — tu tło panelu, złota nić i strzałka w tych samych kolorach
-   (::after = wypełnienie strzałki, ::before = jej obwódka) */
-body.shinden-list .__react_component_tooltip {
-  max-width: 280px;
-  padding: 8px 14px !important;
-  font-family: var(--font) !important;
-  font-size: 13px !important;
-  line-height: 1.4;
-  text-align: center;
-  color: var(--text) !important;
-  background: var(--panel-solid) !important;
-  border: 1px solid rgba(var(--gold-rgb), .55) !important;
-  border-radius: var(--radius-sm) !important;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, .5), 0 0 14px rgba(var(--accent-rgb), .25);
-}
-body.shinden-list .__react_component_tooltip.show { opacity: 1 !important; }
-body.shinden-list .__react_component_tooltip.place-top::after { border-top-color: var(--panel-solid) !important; }
-body.shinden-list .__react_component_tooltip.place-top::before { border-top-color: rgba(var(--gold-rgb), .55) !important; }
-body.shinden-list .__react_component_tooltip.place-bottom::after { border-bottom-color: var(--panel-solid) !important; }
-body.shinden-list .__react_component_tooltip.place-bottom::before { border-bottom-color: rgba(var(--gold-rgb), .55) !important; }
-body.shinden-list .__react_component_tooltip.place-left::after { border-left-color: var(--panel-solid) !important; }
-body.shinden-list .__react_component_tooltip.place-left::before { border-left-color: rgba(var(--gold-rgb), .55) !important; }
-body.shinden-list .__react_component_tooltip.place-right::after { border-right-color: var(--panel-solid) !important; }
-body.shinden-list .__react_component_tooltip.place-right::before { border-right-color: rgba(var(--gold-rgb), .55) !important; }
-
-/* import z MAL: pole do upuszczenia pliku */
-body.shinden-list .MuiDropzoneArea-root {
-  background: rgba(8, 5, 14, .6) !important;
-  border: 1px dashed rgba(var(--gold-rgb), .5) !important;
-  border-radius: var(--radius) !important;
-  transition: border-color .2s, background .2s;
-}
-body.shinden-list .MuiDropzoneArea-root:hover { border-color: var(--gold) !important; background: rgba(var(--accent-rgb), .06) !important; }
-body.shinden-list .MuiDropzoneArea-text {
-  font-family: var(--font-label) !important;
-  font-size: 13px !important;
-  letter-spacing: .08em;
-  color: var(--text) !important;
-}
-/* ikona: złota chmurka liniowa (maska) zamiast wypełnionej ikony MUI w kolorze akcentu;
-   samo <svg> rysuje ścieżkę przezroczystą, a kształt daje maska na jego tle */
-body.shinden-list .MuiDropzoneArea-icon {
-  width: 46px !important;
-  height: 46px !important;
-  color: transparent !important;
-  background: var(--gold);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 18.5h10.5a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.4 9.1 4.75 4.75 0 0 0 7 18.5z'/%3E%3Cpath d='M12 16v-6M9.5 12.5L12 10l2.5 2.5'/%3E%3C/svg%3E") center / contain no-repeat;
-          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 18.5h10.5a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.4 9.1 4.75 4.75 0 0 0 7 18.5z'/%3E%3Cpath d='M12 16v-6M9.5 12.5L12 10l2.5 2.5'/%3E%3C/svg%3E") center / contain no-repeat;
-  filter: drop-shadow(0 0 6px rgba(var(--gold-rgb), .6));
-  transition: background .2s, transform .2s, filter .2s;
-}
-body.shinden-list .MuiDropzoneArea-root:is(:hover, :focus-visible) .MuiDropzoneArea-icon { background: var(--gold-light); transform: translateY(-2px); filter: drop-shadow(0 0 9px rgba(var(--gold-rgb), .9)); }
-body.shinden-list .MuiDropzoneArea-root:focus-visible { outline: none; border-color: var(--gold-light) !important; }
-body.shinden-list .MuiDropzoneArea-root:hover .MuiDropzoneArea-text { color: var(--gold-light) !important; }
-/* przeciąganie pliku nad pole (MUI: białe pasy) i zły plik (czerwone pasy) */
-body.shinden-list .MuiDropzoneArea-root.MuiDropzoneArea-active {
-  border-style: solid !important;
-  border-color: var(--gold-light) !important;
-  background: repeating-linear-gradient(-45deg, rgba(var(--gold-rgb), .1) 0 14px, transparent 14px 28px), rgba(0, 0, 0, .4) !important;
-}
-body.shinden-list .MuiDropzoneArea-root.MuiDropzoneArea-invalid {
-  border-color: var(--st-dropped) !important;
-  background: repeating-linear-gradient(-45deg, rgba(238, 122, 114, .12) 0 14px, transparent 14px 28px), rgba(0, 0, 0, .4) !important;
-}
-/* wybrany plik: przycisk usuwania był jasnym kółkiem z czerwoną obwódką */
-body.shinden-list .MuiDropzonePreviewList-removeButton {
-  background: rgba(0, 0, 0, .4) !important;
-  border: 1px solid color-mix(in srgb, var(--st-dropped) 60%, transparent) !important;
-  box-shadow: none !important;
-}
-body.shinden-list .MuiDropzonePreviewList-removeButton svg { color: var(--st-dropped) !important; }
-body.shinden-list .MuiDropzonePreviewList-removeButton:hover { background: color-mix(in srgb, var(--st-dropped) 20%, transparent) !important; }
-
-/* oceny skinów: „Importuj wygląd” jako mały przycisk w jednej linii.
-   Kolumna „Opcje” ma od Shindena 120px, a przycisk ~123px — był ucinany z prawej, więc kolumna
-   (nagłówek i wiersze razem, żeby się nie rozjechały) dostaje 140px */
-body.shinden-list .settingsContent-wrapper :is(.listRowDesktop-item, .table-header-item):last-child { width: 140px !important; }
-body.shinden-list .settingsContent-wrapper .listRowDesktop-item:last-child { padding-left: 4px !important; padding-right: 4px !important; }
-body.shinden-list .settingsContent-wrapper .cellDefault-value { color: var(--text) !important; }
-body.shinden-list .settingsContent-wrapper .listRowDesktop-item:last-child .cellLink-link {
-  display: inline-block;
-  padding: 3px 8px;
-  white-space: nowrap;
-  font-family: var(--font-label) !important;
-  font-size: 10px !important;
-  font-weight: 600 !important;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  color: var(--gold-light) !important;
-  border-radius: 4px;
-  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .45);
-  transition: background .2s, color .2s;
-}
-body.shinden-list .settingsContent-wrapper .listRowDesktop-item:last-child .cellLink-link:hover { color: #fff !important; background: var(--accent); }
-/* pusta tabela („Brak wyników”) */
-body.shinden-list .tableRowEmpty-wrapper { background: transparent !important; border: 0 !important; border-bottom: 1px solid rgba(var(--gold-rgb), .12) !important; }
-body.shinden-list .tableRowEmpty-text { font-family: var(--font-label) !important; font-size: 12px !important; letter-spacing: .14em; text-transform: uppercase; color: var(--muted) !important; }
-/* pusta lista w widoku kafelków (.no-data-*) — tak samo jak pusty wiersz tabeli; Shinden dawał tu biały, zwykły tekst.
-   position: static — Shinden ustawia go absolutnie w tabeli o wysokości 60px, przez co wystawał poza panel */
-body.shinden-list .tiles-table:has(.no-data-wrapper) .rt-table { display: none; }   /* pusta siatka pod napisem (60px) — wrapper jest tylko przy pustej liście */
-body.shinden-list .no-data-wrapper { position: static !important; transform: none !important; width: auto !important; padding: 26px 0 18px !important; text-align: center; background: transparent !important; border: 0 !important; }
-body.shinden-list .no-data-children { margin: 0 !important; font-family: var(--font-label) !important; font-size: 12px !important; letter-spacing: .14em; text-transform: uppercase; color: var(--muted) !important; }
-body.shinden-list .no-data-children::after { content: "— ❦ —"; display: block; margin-top: 14px; font-size: 18px; line-height: 1; letter-spacing: 0; color: rgba(var(--gold-rgb), .6); }
-/* import z MAL: przełącznik Anime/Manga, przyciski i pole przy niedopasowanych tytułach */
-body.shinden-list .unmatched-btn {
-  padding: 6px 16px !important;
-  font-family: var(--font-label) !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--text) !important;
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: var(--radius-sm) !important;
-  box-shadow: inset 0 0 0 1px var(--line);
-  transition: color .2s, background .2s, box-shadow .2s;
-}
-body.shinden-list .unmatched-btn:hover:not(:disabled) { color: var(--gold-light) !important; box-shadow: inset 0 0 0 1px var(--gold); }
-body.shinden-list .unmatched-btn[aria-pressed="true"] { color: #fff !important; background: linear-gradient(135deg, var(--accent), var(--accent-2)) !important; box-shadow: 0 0 12px rgba(var(--accent-rgb), .45); }
-body.shinden-list .unmatched-row { border-bottom: 1px solid rgba(var(--gold-rgb), .12) !important; }
-body.shinden-list .unmatched-meta { font-family: var(--font-label) !important; font-size: 12px; color: var(--muted) !important; }
-body.shinden-list .unmatched-input {
-  border: 0 !important;
-  border-radius: var(--radius-sm) !important;
-  background: var(--input-bg) !important;
-  box-shadow: inset 0 0 0 1px var(--line);
-  color: var(--text) !important;
-}
-body.shinden-list .unmatched-input:focus { box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 3px rgba(var(--accent-rgb), .2); outline: 0; }
-/* drobne teksty w ustawieniach, którym Shinden daje własny szary #eceaec */
-body.shinden-list :is(.skinSubmission-text, .unmatched-intro, .music-box-volume p) { color: var(--text) !important; }
-body.shinden-list :is(.importCss-copyText, .rateSkin-hint) { font-size: 14px; color: var(--muted) !important; }
-body.shinden-list .importCss-copy--ok .importCss-copyText::before { content: "✦ "; color: var(--st-in-progress); }
-
-/* cudze ustawienia → „Porównanie widoków”: dwie kolumny (moja lista / właściciela) */
-body.shinden-list .viewComparison-title { color: var(--muted) !important; font-weight: 600; }
-body.shinden-list .viewComparison-options > .viewComparison-title { flex: none; white-space: nowrap; }
-body.shinden-list .viewComparison-titleCheckbox { color: var(--text) !important; font-weight: 500; }
-body.shinden-list .viewComparison-value { min-width: 0; color: var(--heading) !important; overflow-wrap: anywhere; }
-body.shinden-list .viewComparison-wrapper a { color: var(--accent-light) !important; text-decoration-color: rgba(var(--accent-rgb), .4) !important; overflow-wrap: anywhere; transition: color .2s; }
-body.shinden-list .viewComparison-wrapper a:hover { color: var(--gold-light) !important; }
-
-@media (prefers-reduced-motion: reduce) {
-  body.shinden-list .settingsContent-header h3::after { animation: none; }
-}
+body.shinden-list .bulkUpdate-accordion-content .title-edit-
