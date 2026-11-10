@@ -175,6 +175,9 @@
     url("https://raw.githubusercontent.com/opmix/opshinden/main/naroznik.svg") right top / 48px no-repeat,
     url("https://raw.githubusercontent.com/opmix/opshinden/main/naroznik.svg") right bottom / 48px no-repeat, 
     url("https://raw.githubusercontent.com/opmix/opshinden/main/naroznik.svg") left bottom / 48px no-repeat;
+   /* płatki */
+   --platki-pelne: url("https://raw.githubusercontent.com/opmix/opshinden/main/platki-pelne.svg");
+   --platki-lekkie: url("https://raw.githubusercontent.com/opmix/opshinden/main/platki-lekkie.svg");
 }
 
 /* =====================================================================
